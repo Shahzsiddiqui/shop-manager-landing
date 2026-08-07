@@ -1,0 +1,2796 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Manager — coming soon</title>
+<style>
+  :root{
+    --sky:#E3F1F4;
+    --meadow:#DCEDCB;
+    --page:#F8F9F1;
+    --paper:#FFFDF6;
+    --ink:#22301F;
+    --ink-dim:#5F7060;
+    --cream:#F6F7EF;
+    --green:#3F8C46;
+    --green-bright:#96BF48;
+    --sun:#F4C542;
+    --alert:#E8574B;
+    --sand:#F0E3BC;
+    --edge:rgba(34,48,31,.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--page);
+    color:var(--ink);
+    font-family:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent; /* the dead-click demo is the tap feedback */
+  }
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid rgba(63,140,70,.55);outline-offset:2px}
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;min-height:100vh;overflow:hidden;
+    background:
+      radial-gradient(900px 500px at 82% 0%, rgba(255,247,220,.9), transparent 60%),
+      linear-gradient(180deg, var(--sky) 0%, #EDF4E4 42%, var(--meadow) 100%);
+  }
+  .hero-stage{position:relative;max-width:1440px;margin:0 auto;min-height:100vh}
+
+  nav{position:relative;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:26px 48px}
+  .brand{font-size:21px;font-weight:700;letter-spacing:.01em}
+  .brand span{font-weight:400;color:var(--ink-dim)}
+  .btn{
+    display:inline-block;border:0;cursor:pointer;text-decoration:none;text-align:center;
+    padding:12px 26px;border-radius:999px;
+    color:#fff;font-size:15px;font-weight:600;font-family:inherit;
+    background:linear-gradient(180deg,#58A14E,var(--green));
+    box-shadow:0 6px 16px rgba(63,140,70,.3), inset 0 1px 0 rgba(255,255,255,.25);
+    transition:transform .25s,box-shadow .25s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(63,140,70,.38)}
+
+  .copy{position:relative;z-index:4;max-width:600px;padding:38px 0 80px 68px}
+  .badge{
+    display:inline-block;padding:7px 16px;border-radius:999px;
+    font-size:12.5px;font-weight:600;letter-spacing:.06em;
+    color:var(--green);background:rgba(150,191,72,.14);border:1px solid rgba(63,140,70,.3);
+  }
+  h1{
+    margin-top:22px;
+    font-size:clamp(34px,3.9vw,54px);
+    line-height:1.08;font-weight:800;letter-spacing:-.01em;
+    text-wrap:balance;
+  }
+  .sub{margin-top:20px;max-width:31em;font-size:clamp(16px,1.35vw,18.5px);line-height:1.55;color:var(--ink-dim)}
+
+  .cap{margin-top:30px;display:flex;gap:10px;max-width:470px}
+  .cap input{
+    flex:1;min-width:0;padding:14px 18px;border-radius:999px;
+    border:1.5px solid rgba(34,48,31,.22);background:#fff;
+    font-size:16px;font-family:inherit;color:var(--ink); /* ≥16px: no iOS focus zoom */
+  }
+  .cap input::placeholder{color:#9AA795}
+  .cap .btn{white-space:nowrap;padding:14px 24px}
+  .micro{margin-top:12px;font-size:12.5px;color:var(--ink-dim)}
+  .cap-wrap .step2,.cap-wrap .step3{display:none}
+  .cap-wrap.s2 .step1{display:none}
+  .cap-wrap.s2 .step2{display:block}
+  .cap-wrap.s3 .step1,.cap-wrap.s3 .step2{display:none}
+  .cap-wrap.s3 .step3{display:block}
+  .okline{font-size:22px;font-weight:800}
+  .okline b{color:var(--green)}
+  .step2 p{margin:10px 0 16px;max-width:34em;font-size:15px;line-height:1.55;color:var(--ink-dim)}
+  .step3 p{font-size:18px;font-weight:600;color:var(--green);margin-top:8px}
+
+  /* hero scene (shared design system) */
+  .scene{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .scene svg{width:100%;height:100%;display:block}
+  .trail-dash{stroke-dasharray:2 22;animation:flow 2.6s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-24}}
+  .cloud{animation:drift 46s ease-in-out infinite alternate}
+  .cloud.c2{animation-duration:60s;animation-delay:-20s}
+  @keyframes drift{from{transform:translateX(0)}to{transform:translateX(46px)}}
+  .figure{animation:bob .55s ease-in-out infinite alternate}
+  @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-2.5px)}}
+  .legL{transform-box:fill-box;transform-origin:50% 8%;animation:stepL .55s ease-in-out infinite alternate}
+  .legR{transform-box:fill-box;transform-origin:50% 8%;animation:stepL .55s ease-in-out infinite alternate-reverse}
+  @keyframes stepL{from{transform:rotate(17deg)}to{transform:rotate(-17deg)}}
+  .tile-in{opacity:0;animation:tileIn .8s cubic-bezier(.2,.7,.2,1) forwards}
+  .tile-in.t2{animation-delay:.25s}
+  .tile-in.t3{animation-delay:.5s}
+  .tile-in.t4{animation-delay:.7s}
+  @keyframes tileIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .wf{fill:#EDE9DC;stroke:rgba(34,48,31,.14);stroke-width:.75}
+  .fld{fill:#FFFFFF;stroke:rgba(34,48,31,.22);stroke-width:.75}
+  .fb{transition:fill .35s,stroke .35s}
+  .fb.hot{fill:#F8D3CC;stroke:var(--alert)}
+  .wfbtn{fill:var(--green-bright)}
+  .btxt{font-size:6.5px;font-weight:700;letter-spacing:.08em;fill:#fff}
+  .urltxt{font-size:7px;font-weight:600;letter-spacing:.05em;fill:var(--ink-dim)}
+  .thumbEl{fill:var(--green-bright)}
+  .station .st-ring{
+    fill:none;stroke:var(--green-bright);stroke-width:1.6;opacity:.6;
+    transform-box:fill-box;transform-origin:center;
+    animation:stPing 2.8s ease-out infinite;
+  }
+  @keyframes stPing{0%{transform:scale(.4);opacity:.9}70%,100%{transform:scale(1.8);opacity:0}}
+  .station .st-core{fill:var(--green)}
+  .station.hot .st-core{fill:var(--sun)}
+  .station.hot .st-ring{animation-duration:.9s;stroke:var(--sun)}
+  .st-label{font-size:12.5px;font-weight:700;letter-spacing:.16em;fill:var(--ink-dim)}
+  .st-label.mini{font-size:10px;opacity:.85}
+  .connector{stroke:rgba(63,140,70,.4);stroke-width:1.3;fill:none;stroke-dasharray:3 4;opacity:0;animation:connOn .6s ease forwards;transition:stroke .3s,stroke-width .3s}
+  .connector.k1{animation-delay:1.6s}
+  .connector.k2{animation-delay:1.8s}
+  .connector.k3{animation-delay:2s}
+  @keyframes connOn{to{opacity:1}}
+  .connector.hot{stroke:rgba(63,140,70,.95);stroke-width:2.2}
+  .cnode{fill:var(--green-bright)}
+
+  /* finding cards */
+  .card{
+    background:rgba(255,255,253,.9);
+    border:1px solid var(--edge);
+    border-radius:16px;padding:18px 18px 16px;
+    box-shadow:0 14px 34px rgba(34,48,31,.12), inset 0 1px 0 #fff;
+    transition:border-color .35s,box-shadow .35s;
+  }
+  /* watch-it-work coverflow carousel */
+  /* pin & scrub: the section owns extra scroll distance; the pinned view is one screen */
+  /* tall section = comfortable pinned scrub speed; panel HUGS the carousel (not 100vh)
+     and anchors near the top, so there's a small 36px gap above instead of a centered band */
+  #s-findings{padding:0;height:260vh;position:relative}  /* height = scroll speed knob: taller = slower per card (5 cards) */
+  .findings-pin{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px;overflow:hidden}
+  .findings .wrap{text-align:center}
+  .findings .lede{margin-top:14px;margin-left:auto;margin-right:auto}
+  .coverflow-wrap{position:relative;margin-top:34px}
+  /* card 1: "this is you" — live session tied to the walker */
+  .cf-you{border-color:rgba(63,140,70,.4);box-shadow:0 16px 38px rgba(34,48,31,.14), 0 0 0 3px rgba(150,191,72,.18), inset 0 1px 0 #fff}
+  .cf-you-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+  .cf-you-fig{flex:0 0 42px}
+  .cf-you-row .cf-hint{flex-basis:100%;margin-top:4px}
+  .coverflow{
+    display:flex;gap:22px;overflow-x:hidden;
+    padding:44px max(24px, calc(50% - min(235px, 41vw))) 20px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .coverflow::-webkit-scrollbar{display:none}
+  .cf-card{
+    flex:0 0 min(470px, 82vw);scroll-snap-align:center;  /* wide on desktop, shrinks to fit on phones — stays centred at every width */
+    background:rgba(255,255,253,.94);border:1px solid var(--edge);border-radius:18px;
+    box-shadow:0 16px 38px rgba(34,48,31,.12), inset 0 1px 0 #fff;
+    padding:22px 22px 20px;min-height:392px;
+    display:flex;flex-direction:column;
+    transform:scale(.84);opacity:.55;
+    transition:transform .3s cubic-bezier(.2,.7,.2,1),opacity .3s,box-shadow .3s;
+    will-change:transform;
+  }
+  .cf-card.active{box-shadow:0 26px 60px rgba(34,48,31,.2), inset 0 1px 0 #fff}
+  .cf-num{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--green);font-variant-numeric:tabular-nums}
+  .cf-card h3{margin-top:8px;font-size:20px;font-weight:800;line-height:1.15}
+  .cf-card .cf-sub{margin-top:8px;font-size:13.5px;line-height:1.5;color:var(--ink-dim)}
+  .cf-card .cf-sub b{color:var(--ink);font-weight:700}
+  .cf-viz{margin-top:auto;padding-top:18px}
+
+  /* card 1: live session log (mirrors the walker's hover card) */
+  .cf-log{background:#fff;border:1px solid var(--edge);border-radius:12px;padding:13px 14px;box-shadow:inset 0 1px 0 #fff}
+  .cf-log h5{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:7px}
+  .cf-log h5 .rec{width:7px;height:7px;border-radius:50%;background:var(--alert);animation:hudBlink 1.4s ease-in-out infinite}
+  .cf-log ul{list-style:none;margin:9px 0 0}
+  .cf-log li{display:flex;gap:8px;padding:2.5px 0;font-size:11.5px;color:var(--ink-dim)}
+  .cf-log li b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600;min-width:30px}
+  .cf-hint{margin-top:10px;font-size:11.5px;color:var(--green);font-weight:600}
+
+  /* card 3: CRO validation */
+  .cf-hyp{background:#F4F6EE;border:1px solid var(--edge);border-radius:12px;padding:14px}
+  .cf-hyp .q{font-size:13px;line-height:1.45;color:var(--ink)}
+  .cf-conf{margin-top:12px;display:flex;align-items:center;gap:9px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim)}
+  .cf-conf .bar{flex:1;height:6px;border-radius:3px;background:rgba(34,48,31,.1);overflow:hidden}
+  .cf-conf .bar i{display:block;height:100%;width:86%;border-radius:3px;background:linear-gradient(90deg,var(--green-bright),var(--green))}
+
+  /* card 5: design before/after */
+  .cf-ba{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cf-frame{background:#F4F1E7;border:1px solid var(--edge);border-radius:10px;height:104px;position:relative;overflow:hidden}
+  .cf-frame .tag{position:absolute;top:6px;left:6px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);background:#fff;border-radius:5px;padding:1px 6px}
+  .cf-frame.after{border-color:rgba(63,140,70,.45)}
+  .cf-frame .ship{position:absolute;left:8px;right:8px;bottom:8px;height:16px;border-radius:5px;background:var(--green-bright);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:#fff;letter-spacing:.04em}
+  .cf-frame .wl{position:absolute;left:8px;background:rgba(34,48,31,.12);border-radius:3px;height:6px}
+
+  /* card 6: dev & deploy */
+  .cf-code{background:#12180F;border-radius:12px;padding:14px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:11px;line-height:1.7;color:#B9C7A8}
+  .cf-code .k{color:#96BF48}.cf-code .s{color:#E7C46A}.cf-code .c{color:#5F7060}
+  .cf-deploy{margin-top:12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--green)}
+  .cf-deploy .ab{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(63,140,70,.12);border:1px solid rgba(63,140,70,.35);border-radius:999px;padding:2px 9px}
+
+  /* card 7: results */
+  .cf-result{text-align:center;padding:6px 0 2px}
+  .cf-result .big{font-size:42px;font-weight:800;color:var(--green);font-variant-numeric:tabular-nums;line-height:1}
+  .cf-result .cvr{margin-top:12px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+  .cf-result .cvr .up{color:var(--green)}
+  .cf-result .cvr s{color:var(--ink-dim);opacity:.7}
+  .cf-spark{margin-top:14px}
+
+  #s-proof{padding-top:32px}
+  .cf-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
+  .cf-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;cursor:pointer;background:rgba(34,48,31,.18);transition:background .25s,transform .25s}
+  .cf-dots button.on{background:var(--green);transform:scale(1.3)}
+  .cf-arrow{
+    position:absolute;top:44%;z-index:3;width:44px;height:44px;border-radius:50%;
+    border:1px solid var(--edge);background:rgba(255,255,253,.95);cursor:pointer;
+    display:grid;place-items:center;font-size:19px;color:var(--ink);
+    box-shadow:0 8px 20px rgba(34,48,31,.12);transition:transform .2s,box-shadow .2s;
+  }
+  .cf-arrow:hover{transform:scale(1.08)}
+  .cf-arrow.prev{left:-8px}.cf-arrow.next{right:-8px}
+  @media (max-width:720px){.cf-arrow{display:none}}
+  .card.ping{border-color:var(--green-bright);box-shadow:0 14px 34px rgba(34,48,31,.14), 0 0 0 4px rgba(150,191,72,.22), inset 0 1px 0 #fff}
+  .card .eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+  .card-body{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
+  .card h3{font-size:16.5px;line-height:1.25;font-weight:700}
+  .card p{margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-dim)}
+  .card p b{color:var(--ink);font-weight:700}
+  .thumb{border-radius:10px;overflow:hidden;position:relative;background:#F4F1E7;border:1px solid rgba(34,48,31,.08);height:104px}
+  .wire{position:absolute;background:rgba(34,48,31,.12);border-radius:3px}
+  .heat{
+    position:absolute;left:8px;top:8px;width:84px;height:56px;border-radius:8px;
+    background:
+      radial-gradient(28px 20px at 30% 40%, rgba(255,60,40,.85), transparent 70%),
+      radial-gradient(46px 32px at 45% 50%, rgba(255,180,40,.7), transparent 70%),
+      radial-gradient(70px 48px at 55% 55%, rgba(90,200,110,.55), transparent 72%),
+      radial-gradient(90px 62px at 60% 60%, rgba(70,140,220,.4), transparent 75%);
+    filter:blur(1px);
+    animation:heatShimmer 3.5s ease-in-out infinite;
+  }
+  @keyframes heatShimmer{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+  .deadclick{position:absolute;right:26px;bottom:18px;color:var(--alert);font-size:14px;font-weight:700;animation:alertPulse 1.6s ease-in-out infinite}
+  @keyframes alertPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+  .flowmap{position:absolute;inset:0}
+  .flowmap svg{width:100%;height:100%}
+  .edge{stroke:rgba(63,140,70,.5);stroke-width:1;fill:none;stroke-dasharray:3 4;animation:flow 2.6s linear infinite}
+  .fnode{fill:#E5E9DA;stroke:rgba(34,48,31,.2);stroke-width:.75}
+  .fnode.err{fill:rgba(232,87,75,.75);stroke:rgba(200,60,50,.8);transform-box:fill-box;transform-origin:center;animation:alertPulse 1.8s ease-in-out infinite}
+  .card.fix{background:rgba(250,253,244,.92)}
+  .card.fix .card-body{grid-template-columns:1fr 54px}
+  .card.fix h3{font-size:17px}
+  .pkg{width:54px;height:54px;display:grid;place-items:center;animation:pkgFloat 4s ease-in-out infinite}
+  @keyframes pkgFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(3deg)}}
+  .resolve{margin-top:10px;height:4px;border-radius:2px;background:rgba(34,48,31,.1);overflow:hidden}
+  .resolve i{display:block;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--green-bright),var(--green));animation:resolveFill 1.6s cubic-bezier(.2,.7,.2,1) forwards 2.2s}
+  @keyframes resolveFill{to{width:86%}}
+
+  /* ============ PAGE JOURNEY (the visitor walks the page) ============ */
+  body{position:relative}
+  #journey,#journeyTop,#journeyFx{position:absolute;top:0;left:0;width:100%;pointer-events:none;overflow:hidden}
+  #journey{z-index:1}
+  #journeyTop{z-index:3}
+  #journeyFx{z-index:4;bottom:0;height:auto;overflow:visible}
+  #journey svg,#journeyTop svg{display:block}
+  .sec .wrap,.values .wrap{position:relative;z-index:2}
+  footer{position:relative;z-index:2}
+  #jwalker{
+    position:absolute;left:0;top:0;width:60px;height:80px;z-index:1;
+    will-change:transform;pointer-events:auto;cursor:pointer;
+    transition:opacity .4s;
+    transform-origin:30px 68px; /* scale about the feet */
+    visibility:hidden; /* revealed on first positioning to avoid a (0,0) flash */
+  }
+  #jwalker.j-under{opacity:0}
+  #jwalker.j-over{z-index:3}
+  #jwalker .legL,#jwalker .legR,#jwalker .figure{animation-play-state:paused}
+  #jwalker.walking .legL,#jwalker.walking .legR,#jwalker.walking .figure{animation-play-state:running}
+  /* micro-personality: the manager reacts to how you move */
+  #jwalker.jog .legL,#jwalker.jog .legR{animation-duration:.28s}          /* fast scroll → the walker jogs to keep up */
+  #jwalker.idle .figure{animation:idleBob 2.6s ease-in-out infinite;animation-play-state:running}   /* still too long → idle sway */
+  #jwalker.idle .arm{animation:idleWatch 5s ease-in-out infinite}         /* ...and a glance at the watch */
+  #jwalker.arrived .figure{animation:arriveNod .7s ease;animation-play-state:running}                /* reaches the end → a little nod */
+  #jwalker .arm{transform-box:fill-box;transform-origin:80% 90%}
+  @keyframes idleBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1px) rotate(-2deg)}}
+  @keyframes idleWatch{0%,74%,100%{transform:rotate(0)}82%,92%{transform:rotate(-58deg)}}
+  @keyframes arriveNod{0%,100%{transform:translateY(0)}35%{transform:translateY(-5px)}70%{transform:translateY(0)}}
+  /* shopping bag fills as the visitor passes each store section */
+  #jwalker .bi{opacity:0;transform:translateY(4px) scale(.2);transform-box:fill-box;transform-origin:center;transition:opacity .4s,transform .4s cubic-bezier(.2,1.3,.4,1)}
+  #jwalker.bag1 .bi1,#jwalker.bag2 .bi1,#jwalker.bag2 .bi2,#jwalker.bag3 .bi1,#jwalker.bag3 .bi2,#jwalker.bag3 .bi3{opacity:1;transform:translateY(0) scale(1)}
+  .jms{fill:#EAD9A8;stroke:#C9B784;stroke-width:1.5;transition:fill .4s,stroke .4s}
+  .jms.lit{fill:var(--green-bright);stroke:var(--green)}
+  /* replay-my-visit banner */
+  .replay-banner{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-140%);z-index:62;
+    background:#22301F;color:#F6F7EF;font-size:14px;font-weight:600;padding:10px 18px;border-radius:999px;
+    box-shadow:0 12px 30px rgba(34,48,31,.3);display:flex;align-items:center;gap:9px;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+  .replay-banner.on{transform:translateX(-50%) translateY(0)}
+  .replay-banner .rec{width:8px;height:8px;border-radius:50%;background:var(--alert);animation:hudBlink 1s infinite}
+  .db-replay{margin-top:10px;width:100%;background:#fff;border:1.5px solid var(--edge);border-radius:11px;padding:11px;
+    font-size:13.5px;font-weight:600;color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
+  .db-replay:hover{background:rgba(63,140,70,.06)}
+
+  /* live-demo layer: observations pop above the visitor's character */
+  .demo-toast{
+    position:absolute;transform:translate(-50%,-100%);
+    background:#fff;border:1px solid var(--edge);border-radius:999px;
+    box-shadow:0 10px 26px rgba(34,48,31,.18);
+    padding:8px 15px;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;
+    animation:dtIn 3s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  .demo-toast .ic{margin-right:6px}
+  @keyframes dtIn{
+    0%{opacity:0;transform:translate(-50%,-86%) scale(.85)}
+    9%{opacity:1;transform:translate(-50%,-100%) scale(1)}
+    80%{opacity:1}
+    100%{opacity:0;transform:translate(-50%,-118%)}
+  }
+  .dead-ping{
+    position:fixed;z-index:9;width:34px;height:34px;margin:-17px 0 0 -17px;
+    border:2px solid var(--alert);border-radius:50%;
+    color:var(--alert);display:grid;place-items:center;font-weight:700;font-size:13px;
+    background:rgba(232,87,75,.08);pointer-events:none;
+    animation:dpIn 1.1s ease-out forwards;
+  }
+  @keyframes dpIn{0%{opacity:0;transform:scale(.4)}20%{opacity:1}100%{opacity:0;transform:scale(1.3) translateY(-12px)}}
+  .sess{
+    position:absolute;z-index:5;width:264px;display:none;
+    background:#fff;border:1px solid var(--edge);border-radius:14px;
+    box-shadow:0 18px 44px rgba(34,48,31,.22);
+    padding:14px 16px;font-size:12.5px;
+  }
+  .sess.on{display:block}
+  .sess h5{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:7px}
+  .sess h5 .rec{width:7px;height:7px;border-radius:50%;background:var(--alert);animation:hudBlink 1.4s ease-in-out infinite}
+  .sess ul{list-style:none;margin:10px 0 0}
+  .sess li{display:flex;gap:9px;padding:3px 0;color:var(--ink-dim)}
+  .sess li b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+  .sess .foot{margin-top:10px;font-size:11px;color:var(--ink-dim);border-top:1px solid var(--edge);padding-top:8px}
+
+  /* ===== manager's debrief: end-of-visit report ===== */
+  .db-overlay{position:fixed;inset:0;background:rgba(34,48,31,.38);z-index:60;opacity:0;transition:opacity .35s}
+  .db-overlay.on{opacity:1}
+  .debrief{position:fixed;z-index:61;background:var(--paper,#FFFDF6);border:1px solid var(--edge);box-shadow:0 30px 80px rgba(34,48,31,.3);
+    left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);opacity:0;border-radius:20px;width:min(760px,calc(100vw - 40px));
+    max-height:min(86vh,640px);overflow:auto;transition:opacity .35s,transform .35s cubic-bezier(.2,.7,.2,1)}
+  .debrief.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .db-grid{display:grid;grid-template-columns:1.25fr 1fr}
+  .db-x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:1px solid var(--edge);background:#fff;
+    font-size:16px;line-height:1;color:var(--ink-dim);cursor:pointer;z-index:2}
+  .db-x:hover{color:var(--ink)}
+  .db-report{padding:26px 26px 22px;border-right:1px solid var(--edge)}
+  .db-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .db-head .avatar{width:34px;height:34px;border-radius:50%;background:#3E8E8C;flex:0 0 34px;display:flex;align-items:center;justify-content:center}
+  .db-head h4{font-size:16px;font-weight:800;letter-spacing:-.01em}
+  .db-head .sub{font-size:11.5px;color:var(--ink-dim)}
+  .db-find{border:1px solid var(--edge);border-radius:12px;padding:11px 13px;margin-top:10px;background:#fff;position:relative}
+  .db-find .pol{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+  .db-find .pol.up{color:var(--green)}
+  .db-find .pol.rough{color:#993C1D}
+  .db-find p{font-size:13px;line-height:1.5;color:var(--ink-dim);margin-top:4px}
+  .db-find p b{color:var(--ink)}
+  .db-find .chip{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:700;letter-spacing:.08em;color:var(--alert);
+    border:1px solid rgba(232,87,75,.4);background:rgba(232,87,75,.1);border-radius:999px;padding:2px 8px}
+  .db-honest{margin-top:12px;font-size:12px;font-style:italic;color:var(--ink-dim);line-height:1.5}
+  .db-ask{padding:26px 24px 22px;display:flex;flex-direction:column;justify-content:center}
+  .db-ask h4{font-size:17px;font-weight:800;line-height:1.3;letter-spacing:-.01em}
+  .db-ask .p{margin-top:8px;font-size:13px;line-height:1.55;color:var(--ink-dim)}
+  .db-ask form{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+  .db-ask input{width:100%;padding:12px 14px;border:1.5px solid var(--edge);border-radius:11px;font-size:14px;background:#fff}
+  .db-ask input:focus{outline:none;border-color:var(--green)}
+  .db-ask .btn{width:100%;padding:13px}
+  .db-done{font-size:14px;font-weight:700;color:var(--green)}
+  .db-done-sub{margin-top:6px;font-size:12.5px;color:var(--ink-dim);line-height:1.5}
+  .db-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .db-chips button{padding:12px 10px;border:1px solid rgba(63,140,70,.4);background:rgba(150,191,72,.1);border-radius:11px;
+    font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.3}
+  .db-chips button:hover{background:rgba(150,191,72,.22)}
+  .db-test{margin-top:14px;border:1px solid var(--edge);border-left:3px solid var(--alert);background:#fff;padding:13px 14px}
+  .db-test .tt{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#993C1D}
+  .db-test h5{font-size:14px;font-weight:800;margin-top:5px;line-height:1.3}
+  .db-test p{font-size:12.5px;color:var(--ink-dim);line-height:1.5;margin-top:5px}
+  .db-test p b{color:var(--ink);font-weight:700}
+  .db-quiet{margin-top:12px;font-size:12.5px;color:var(--green);font-weight:600;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0}
+  .db-handle{display:none}
+  @media(max-width:720px){
+    .debrief{left:0;right:0;bottom:0;top:auto;width:auto;max-height:72vh;border-radius:18px 18px 0 0;
+      transform:translateY(102%);border-bottom:0}
+    .debrief.on{transform:translateY(0)}
+    .db-grid{display:block}
+    .db-report{border-right:0;padding:8px 18px 4px}
+    .db-ask{padding:14px 18px 20px}
+    .db-handle{display:block;width:38px;height:4.5px;border-radius:3px;background:rgba(34,48,31,.18);margin:10px auto 2px}
+    .db-find p{font-size:12.5px}
+  }
+
+  /* mobile toast variant: rises from the journey bar */
+  .demo-toast.m{
+    position:fixed;left:16px;bottom:72px;z-index:8;
+    transform:none;animation:dtInM 3s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  @keyframes dtInM{
+    0%{opacity:0;transform:translateY(10px) scale(.9)}
+    9%{opacity:1;transform:none}
+    80%{opacity:1}
+    100%{opacity:0;transform:translateY(-10px)}
+  }
+
+  /* journey bar (mobile): the walker crosses the screen as you cross the page */
+  #jbar{
+    position:fixed;left:0;right:0;bottom:0;height:58px;z-index:7;
+    display:none;pointer-events:none;
+    background:linear-gradient(180deg, rgba(248,249,241,0), rgba(248,249,241,.94) 34%);
+    opacity:.55;transition:opacity .4s;
+  }
+  #jbar.live{opacity:1}
+  #jbar svg{position:absolute;inset:0;width:100%;height:100%}
+
+  /* compact journey strip (mobile hero): plays a full shopper loop */
+  .mini-journey{display:none}
+  /* hero story loop (mobile): one 12s self-playing beat — walk in → stuck → fixed → paid.
+     The first screen IS the demo, not a walk-by. */
+  .mj2-walk{transform:translate(150px,160px)}
+  @supports (offset-path: path('M0,0 L1,1')){
+    .mj2-walk{
+      transform:none;
+      offset-path:path('M-14,32 C50,40 120,44 190,60 C250,74 276,84 268,108 C254,148 170,136 150,162 C138,180 140,196 162,214 C182,232 196,258 220,286 C246,312 300,318 372,306');
+      offset-rotate:0deg;
+      animation:mj2Walk 14s linear infinite;
+    }
+  }
+  @keyframes mj2Walk{
+    0%{offset-distance:0%;opacity:0}
+    3%{opacity:1}
+    30%{offset-distance:59%}
+    52%{offset-distance:59%}   /* stops beside the size-guide ring — something's wrong */
+    80%{offset-distance:90%}
+    93%{opacity:1}
+    100%{offset-distance:100%;opacity:0}
+  }
+  .mj2-warn{opacity:0;animation:mj2Warn 14s linear infinite}
+  @keyframes mj2Warn{0%,31%{opacity:0;transform:translateY(4px)}34%,48%{opacity:1;transform:none}53%,100%{opacity:0}}
+  .mj2-fixpill{opacity:0;animation:mj2Fixp 14s linear infinite}
+  @keyframes mj2Fixp{0%,53%{opacity:0;transform:translateY(4px)}58%,80%{opacity:1;transform:none}86%,100%{opacity:0}}
+  .mj2-ring{opacity:0;animation:mj2Ring 14s linear infinite}
+  @keyframes mj2Ring{0%,28%{opacity:0}31%,50%{opacity:1}54%,100%{opacity:0}}
+  .mj2-check{opacity:0;transform-box:fill-box;transform-origin:center;animation:mj2Check 14s linear infinite}
+  @keyframes mj2Check{0%,52%{opacity:0;transform:scale(.4)}57%,86%{opacity:1;transform:scale(1)}92%,100%{opacity:0}}
+  .mj2-cash{opacity:0;animation:mj2Cash 14s linear infinite}
+  @keyframes mj2Cash{0%,74%{opacity:0;transform:translateY(5px)}79%,90%{opacity:1;transform:none}96%,100%{opacity:0}}
+  .mj2-pay{opacity:0;animation:mj2Pay 14s linear infinite}
+  @keyframes mj2Pay{0%,76%{opacity:0}80%,88%{opacity:1}94%,100%{opacity:0}}
+
+  @media (max-width:1240px){
+    /* the vertical store walk: the SAME journey engine runs on mobile — scrolling IS the walk.
+       The rail hugs the left margin (thin strokes, small walker); jbar is retired. */
+    #jbar{display:none}
+    .sess{position:fixed;left:12px;right:12px;bottom:12px;top:auto !important;width:auto;z-index:9}
+    /* mobile hero rhythm: headline → sub → CTA above the fold; the story loop follows as proof */
+    .copy{display:flex;flex-direction:column}
+    .copy .cap-wrap{order:1}
+    .copy .mini-journey{order:2}
+    .mini-journey{display:block;margin:30px 0 0;max-width:460px}
+    .mini-journey svg{width:100%;height:auto;display:block}
+    /* fix 2+3: keep the sticky pin on mobile so the cards scrub with scroll and there's no empty gap */
+    .findings-pin{padding:20px 16px}
+    .coverflow{overflow-x:hidden;padding:36px max(16px, calc(50% - min(235px, 41vw))) 16px}
+    .cf-card{min-height:372px}
+  }
+  @media (prefers-reduced-motion:reduce){#jwalker,.sess,#jbar{display:none}}
+
+  /* ============ SECTIONS ============ */
+  .sec{padding:110px 24px}
+  .wrap{max-width:1120px;margin:0 auto}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--green)}
+  h2{font-size:clamp(28px,3vw,40px);line-height:1.12;font-weight:800;letter-spacing:.004em;text-wrap:balance}
+  .lede{margin-top:16px;font-size:17.5px;line-height:1.6;color:var(--ink-dim);max-width:38em}
+  .rev{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .rev.vis{opacity:1;transform:none}
+
+  /* stakes */
+  .stakes{background:var(--ink);color:var(--cream);padding-top:72px;padding-bottom:40px}
+  .stakes .wrap{display:flex;align-items:center;gap:64px;flex-wrap:wrap}
+  .stakes .lead{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,247,239,.55)}
+  .stakes .big{font-size:clamp(56px,8vw,110px);font-weight:800;line-height:1;margin-top:14px;color:#F08575}
+  .stakes .note{margin-top:20px;font-size:clamp(18px,2vw,23px);font-weight:600;color:var(--cream);max-width:21em;line-height:1.5}
+  .dotgrid{flex-shrink:0}
+
+  /* proof */
+  .proof{background:var(--page)}
+  .proof .wrap{max-width:820px;text-align:center}
+  .proofcard{
+    background:var(--paper);border:1px solid var(--edge);border-radius:18px;
+    padding:44px 48px 36px;box-shadow:0 18px 44px rgba(34,48,31,.1);
+  }
+  .proofcard blockquote{
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+    font-size:clamp(16px,1.9vw,21px);line-height:1.65;color:var(--ink);
+  }
+  .proofcard blockquote::before{content:"“";color:var(--green-bright)}
+  .proofcard blockquote::after{content:"”";color:var(--green-bright)}
+  .proofcard figcaption{margin-top:18px;font-size:13.5px;color:var(--ink-dim)}
+
+  /* guide */
+  .guide .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:72px;align-items:start}
+  .guide .body{margin-top:18px;font-size:17px;line-height:1.7;color:var(--ink-dim)}
+  .guide .body b{color:var(--ink)}
+  .receipts{display:flex;flex-direction:column;gap:18px}
+  .stat{
+    background:var(--paper);border:1px solid var(--edge);border-radius:14px;
+    padding:20px 24px;box-shadow:0 10px 26px rgba(34,48,31,.08);
+  }
+  .stat .n{font-size:30px;font-weight:800;color:var(--green);font-variant-numeric:tabular-nums}
+  .stat .l{margin-top:4px;font-size:13.5px;color:var(--ink-dim)}
+  .fineprint{margin-top:6px;font-size:12px;color:var(--ink-dim);opacity:.85}
+
+  /* plan */
+  .plan{background:linear-gradient(180deg,var(--page),#F0F4E4)}
+  .plan .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:44px}
+  .step{
+    background:var(--paper);border:1px solid var(--edge);border-radius:16px;
+    padding:28px 26px;box-shadow:0 12px 30px rgba(34,48,31,.08);
+  }
+  .step .num{
+    width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    background:rgba(150,191,72,.16);border:1.5px solid rgba(63,140,70,.4);
+    font-weight:800;color:var(--green);font-size:17px;
+  }
+  .step h3{margin-top:16px;font-size:18px;font-weight:700}
+  .step p{margin-top:10px;font-size:15px;line-height:1.6;color:var(--ink-dim)}
+
+  /* transformation */
+  .transform .wrap{max-width:760px;text-align:center}
+  .transform .body{margin-top:18px;font-size:18px;line-height:1.7;color:var(--ink-dim)}
+  .transform .body b{color:var(--ink)}
+  .transform h2 em{font-style:italic;font-weight:600;color:var(--ink-dim)}
+  .transform h2 b{color:var(--green)}
+  .spark{position:relative;display:inline-block}
+  .spark::before,.spark::after,.spark>b::after{content:"";position:absolute;background:no-repeat center/contain;pointer-events:none;
+    filter:drop-shadow(0 0 3px rgba(240,166,20,.6));
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F0A614' d='M12 0c1.2 8.4 2.4 10.8 12 12-9.6 1.2-10.8 3.6-12 12-1.2-8.4-2.4-10.8-12-12 9.6-1.2 10.8-3.6 12-12z'/%3E%3C/svg%3E")}
+  .spark>b{position:relative}
+  .spark::before{width:.62em;height:.62em;top:-.42em;right:-.42em;animation:twinkle 2s ease-in-out infinite}
+  .spark::after{width:.4em;height:.4em;bottom:-.14em;left:-.34em;animation:twinkle 2s ease-in-out infinite .7s}
+  .spark>b::after{width:.32em;height:.32em;top:.05em;right:-.5em;animation:twinkle 2s ease-in-out infinite 1.3s}
+  @keyframes twinkle{0%,100%{transform:scale(.6) rotate(0deg);opacity:.5}50%{transform:scale(1.12) rotate(90deg);opacity:1}}
+  @media(prefers-reduced-motion:reduce){.spark::before,.spark::after,.spark>b::after{animation:none;opacity:1;transform:scale(.9)}}
+
+  /* report artifact */
+  .reportsec{background:linear-gradient(180deg,#F0F4E4,var(--meadow))}
+  .reportsec .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:center}
+  .report{
+    background:var(--paper);border:1px solid var(--edge);border-radius:14px;
+    box-shadow:0 26px 60px rgba(34,48,31,.16);
+    transform:rotate(-1.2deg);
+    font-variant-numeric:tabular-nums;
+  }
+  .report header{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:18px 26px;border-bottom:1.5px solid var(--edge);
+  }
+  .report header .rt{font-weight:800;font-size:16px}
+  .report header .rd{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink-dim)}
+  .finding{display:flex;gap:18px;padding:20px 26px;border-bottom:1px solid var(--edge);align-items:flex-start}
+  .finding:last-of-type{border-bottom:0}
+  .finding .fno{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;color:var(--ink-dim);padding-top:3px}
+  .finding .ft{font-size:15px;font-weight:700;line-height:1.35}
+  .finding .fd{margin-top:5px;font-size:13.5px;line-height:1.55;color:var(--ink-dim)}
+  .finding .fm{margin-left:auto;flex-shrink:0;text-align:right;font-weight:800;color:var(--alert);font-size:15px;white-space:nowrap}
+  .chip{
+    display:inline-block;margin-left:8px;padding:2.5px 9px;border-radius:999px;vertical-align:2px;
+    background:rgba(232,87,75,.12);border:1px solid rgba(232,87,75,.4);
+    font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--alert);
+  }
+  .report .rfoot{padding:14px 26px;font-size:12px;color:var(--ink-dim);font-style:italic;background:rgba(34,48,31,.03);border-radius:0 0 14px 14px}
+
+  /* pricing */
+  .pricing .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:44px}
+  .tier{
+    background:var(--paper);border:1px solid var(--edge);border-radius:18px;
+    padding:30px 28px;box-shadow:0 14px 34px rgba(34,48,31,.09);
+    display:flex;flex-direction:column;
+  }
+  .tier .flag{align-self:flex-start;margin-bottom:10px;padding:3px 10px;border-radius:999px;background:rgba(63,140,70,.12);border:1px solid rgba(63,140,70,.35);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+  .tier h3{font-size:21px;font-weight:800}
+  .tier .tag{margin-top:6px;font-size:14.5px;color:var(--ink-dim);font-style:italic}
+  .tier .price{margin-top:18px;font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+  .tier .price small{font-size:14px;font-weight:600;color:var(--ink-dim)}
+  .tier .then{font-size:12.5px;color:var(--ink-dim);margin-top:3px}
+  .tier ul{list-style:none;margin:20px 0 26px;display:flex;flex-direction:column;gap:10px}
+  .tier li{font-size:14px;line-height:1.5;color:var(--ink-dim);padding-left:22px;position:relative}
+  .tier li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+  .tier .btn{margin-top:auto;width:100%}
+  .pricing .closing{margin-top:30px;font-size:14.5px;color:var(--ink-dim);text-align:center;max-width:46em;margin-left:auto;margin-right:auto;line-height:1.6}
+  .tier-cta{margin-top:36px;text-align:center;max-width:52em;margin-left:auto;margin-right:auto}
+  .tier-cta p{font-size:14.5px;color:var(--ink-dim);line-height:1.6}
+  .tier-actions{margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .tier-actions .btn{padding:12px 22px}
+
+  /* values */
+  .values{background:var(--ink);color:var(--cream);padding:48px 24px}
+  .values .vh{text-align:center;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--green-bright);margin-bottom:18px}
+  .values .row{display:flex;flex-wrap:wrap;gap:10px 28px;justify-content:center;font-size:14.5px}
+  .values .yes::before{content:"✓ ";color:var(--green-bright);font-weight:700}
+  .values .no{text-decoration:line-through;text-decoration-color:rgba(240,133,117,.75);text-decoration-thickness:1.5px;opacity:.92}
+  .values .no::before{content:"✕ ";color:#F08575;font-weight:700}
+  .values .quiet{margin-top:14px;text-align:center;font-size:13px;color:rgba(246,247,239,.55)}
+
+  /* faq */
+  .faq .wrap{max-width:760px}
+  .faq .qs{margin-top:34px;border-top:1px solid var(--edge)}
+  .faq details{border-bottom:1px solid var(--edge)}
+  .faq summary{list-style:none;cursor:pointer;padding:18px 36px 18px 0;font-weight:600;font-size:16.5px;position:relative}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:21px;color:var(--green);transition:transform .25s}
+  .faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+  .faq details p{padding:0 0 20px;color:var(--ink-dim);font-size:15px;line-height:1.65;max-width:60ch}
+
+  /* final cta */
+  .final{background:linear-gradient(180deg,var(--page),var(--meadow))}
+  .final .wrap{max-width:720px;text-align:center}
+  .final .cap{margin-left:auto;margin-right:auto}
+  .final .sub2{margin-top:16px;font-size:16.5px;line-height:1.6;color:var(--ink-dim);max-width:44em;margin-left:auto;margin-right:auto}
+  .final .purpose{margin-top:34px;font-size:13.5px;color:var(--ink-dim)}
+  .btn.ghost{background:#fff;color:var(--green);border:1.5px solid rgba(63,140,70,.4);box-shadow:none}
+  .btn.ghost:hover{background:rgba(63,140,70,.07)}
+  .cap-lead{font-size:14.5px;font-weight:600;color:var(--ink);margin-bottom:12px}
+  .cap-wrap.pulse{animation:capPulse 1.6s ease}
+  @keyframes capPulse{0%,100%{box-shadow:0 0 0 0 rgba(63,140,70,0)}30%{box-shadow:0 0 0 4px rgba(63,140,70,.18)}}
+
+  footer{background:var(--ink);color:rgba(246,247,239,.65);padding:34px 24px;font-size:13.5px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:center;text-align:center}
+  footer a{color:var(--cream);text-decoration:underline;text-underline-offset:3px}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:1240px){
+    .scene,.cards{display:none}
+    .hero{min-height:0}
+    .copy{max-width:640px;margin:0 auto;padding:24px 24px 72px}
+    nav{padding:20px 24px}
+    .sec{padding:76px 20px}
+    .guide .wrap,.reportsec .wrap{grid-template-columns:1fr;gap:44px}
+    .plan .steps,.pricing .tiers{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}
+    .plan .steps{margin-top:36px}
+    .report{transform:none}
+    .stakes .wrap{gap:36px}
+    .cap{flex-direction:column}
+    .cap .btn{width:100%}
+  }
+
+  @media (max-width:640px){
+    .sec{padding:52px 20px}
+    .dotgrid{display:none}
+    .stakes .big{font-size:64px}
+    .proofcard{padding:30px 26px 26px}
+    /* condensed hero: everything through the CTA fits the first screen */
+    nav{padding:14px 20px}
+    .copy{padding:14px 20px 64px}
+    .badge{padding:5px 13px;font-size:11.5px}
+    h1{font-size:33px;margin-top:16px}
+    .sub{font-size:15px;line-height:1.5;margin-top:12px}
+    .cap{margin-top:18px}
+    .cap input,.cap .btn{padding:12px 18px}
+    .micro{margin-top:9px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0ms !important;animation-iteration-count:1 !important;transition:none !important}
+    html{scroll-behavior:auto}
+    .card,.tile-in{opacity:1;transform:none}
+    .connector{opacity:1}
+    .rev{opacity:1;transform:none}
+    .resolve i{width:86%}
+  }
+</style>
+
+<!-- ================= 1 · NAV + 2 · HERO ================= -->
+<section class="hero">
+  <div class="hero-stage">
+
+    <div class="scene" aria-hidden="true">
+      <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="2.5" stdDeviation="3" flood-color="#22301F" flood-opacity=".18"/>
+          </filter>
+          <path id="trail" d="M1184,138 C1120,150 1030,152 998,151 C930,148 862,120 815,110 L820,226 C834,290 1050,300 1160,362 C1188,382 1196,392 1188,398 C1180,472 962,512 872,540 C848,548 834,552 827,562 C830,626 852,700 876,748"/>
+          <path id="branchHC" d="M778,224 C776,268 780,296 783,320"/>
+          <path id="branchCP" d="M840,352 C905,370 1005,362 1076,376"/>
+          <linearGradient id="hazeG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#E8F1EA" stop-opacity=".9"/>
+            <stop offset=".6" stop-color="#E8F1EA" stop-opacity=".32"/>
+            <stop offset="1" stop-color="#E8F1EA" stop-opacity="0"/>
+          </linearGradient>
+          <path id="trailNear" d="M815,110 L820,226 C834,290 1050,300 1160,362 C1188,382 1196,392 1188,398 C1180,472 962,512 872,540 C848,548 834,552 827,562 C830,626 852,700 876,748"/>
+        </defs>
+
+        <g opacity=".55">
+          <ellipse cx="380" cy="780" rx="300" ry="90" fill="#C9E3B2"/>
+          <ellipse cx="1150" cy="780" rx="260" ry="90" fill="#C9E3B2"/>
+          <ellipse cx="620" cy="620" rx="200" ry="70" fill="#CFE7BB"/>
+        </g>
+        <g>
+          <g transform="translate(640,700)"><circle r="3.4" fill="#fff"/><circle cx="6" r="3.4" fill="#fff"/><circle cx="3" cy="-5" r="3.4" fill="#fff"/><circle cx="3" cy="-1.6" r="2" fill="#F4C542"/></g>
+          <g transform="translate(736,254)"><circle r="3.4" fill="#fff"/><circle cx="6" r="3.4" fill="#fff"/><circle cx="3" cy="-5" r="3.4" fill="#fff"/><circle cx="3" cy="-1.6" r="2" fill="#F4C542"/></g>
+          <g transform="translate(1180,772)"><circle r="3" fill="#F7B6C8"/><circle cx="5.4" r="3" fill="#F7B6C8"/><circle cx="2.7" cy="-4.6" r="3" fill="#F7B6C8"/><circle cx="2.7" cy="-1.4" r="1.8" fill="#F4C542"/></g>
+        </g>
+
+        <g class="plx" data-rate="0.07">
+          <g class="cloud" opacity=".85">
+            <ellipse cx="330" cy="108" rx="52" ry="18" fill="#fff"/><ellipse cx="368" cy="98" rx="34" ry="14" fill="#fff"/><ellipse cx="296" cy="98" rx="30" ry="13" fill="#fff"/>
+          </g>
+          <g class="cloud c2" opacity=".75">
+            <ellipse cx="560" cy="180" rx="44" ry="15" fill="#fff"/><ellipse cx="592" cy="171" rx="27" ry="11" fill="#fff"/>
+          </g>
+        </g>
+
+        <g filter="url(#softShadow)">
+          <g transform="translate(150,760)">
+            <ellipse cx="0" cy="34" rx="26" ry="6" fill="#22301F" opacity=".12"/>
+            <rect x="-5" y="8" width="10" height="26" rx="3" fill="#8A6642"/>
+            <circle cx="0" cy="-8" r="26" fill="#5FA052"/><circle cx="-16" cy="4" r="16" fill="#6FB061"/><circle cx="16" cy="4" r="16" fill="#549449"/>
+          </g>
+          <g transform="translate(340,845)">
+            <ellipse cx="0" cy="26" rx="22" ry="5" fill="#22301F" opacity=".12"/>
+            <circle cx="0" cy="8" r="18" fill="#6FB061"/><circle cx="-14" cy="14" r="12" fill="#5FA052"/><circle cx="14" cy="14" r="12" fill="#5FA052"/>
+          </g>
+          <g transform="translate(1130,768)">
+            <ellipse cx="0" cy="40" rx="30" ry="7" fill="#22301F" opacity=".12"/>
+            <rect x="-6" y="10" width="12" height="30" rx="3" fill="#8A6642"/>
+            <circle cx="0" cy="-12" r="30" fill="#5FA052"/><circle cx="-20" cy="4" r="18" fill="#6FB061"/><circle cx="20" cy="4" r="18" fill="#549449"/>
+          </g>
+          <g transform="translate(1240,520)">
+            <ellipse cx="0" cy="24" rx="20" ry="5" fill="#22301F" opacity=".12"/>
+            <circle cx="0" cy="6" r="16" fill="#6FB061"/><circle cx="-12" cy="12" r="10" fill="#5FA052"/><circle cx="12" cy="12" r="10" fill="#5FA052"/>
+          </g>
+        </g>
+
+
+        <!-- distant treeline, pre-haze -->
+        <g class="plx" data-rate="-0.035" opacity=".3">
+          <g transform="translate(632,80) scale(.45)">
+            <rect x="-5" y="8" width="10" height="22" rx="3" fill="#8A6642"/>
+            <circle cx="0" cy="-6" r="22" fill="#5FA052"/><circle cx="-14" cy="4" r="13" fill="#6FB061"/><circle cx="14" cy="4" r="13" fill="#549449"/>
+          </g>
+          <g transform="translate(760,58) scale(.32)">
+            <circle cx="0" cy="6" r="18" fill="#6FB061"/><circle cx="-13" cy="12" r="11" fill="#5FA052"/><circle cx="13" cy="12" r="11" fill="#5FA052"/>
+          </g>
+          <g transform="translate(1122,84) scale(.4)">
+            <rect x="-5" y="8" width="10" height="22" rx="3" fill="#8A6642"/>
+            <circle cx="0" cy="-6" r="22" fill="#5FA052"/><circle cx="-14" cy="4" r="13" fill="#6FB061"/><circle cx="14" cy="4" r="13" fill="#549449"/>
+          </g>
+        </g>
+
+        <!-- the road: continuous taper from the source convergence down to the homepage -->
+        <g fill="none" stroke-linecap="round">
+          <path d="M998,151 C960,150 916,140 892,132" stroke="#D9C89A" stroke-width="6" opacity=".5"/>
+          <path d="M998,151 C960,150 916,140 892,132" stroke="var(--sand)" stroke-width="4" opacity=".6"/>
+          <path d="M892,132 C872,125 852,118 838,114" stroke="#D9C89A" stroke-width="12" opacity=".68"/>
+          <path d="M892,132 C872,125 852,118 838,114" stroke="var(--sand)" stroke-width="8" opacity=".72"/>
+          <path d="M838,114 C830,112 822,111 815,110" stroke="#D9C89A" stroke-width="20" opacity=".85"/>
+          <path d="M838,114 C830,112 822,111 815,110" stroke="var(--sand)" stroke-width="15" opacity=".88"/>
+        </g>
+
+        <!-- horizon haze -->
+        <rect x="0" y="0" width="1440" height="118" fill="url(#hazeG)"/>
+
+        <!-- traffic sources (drawn above the haze so they stay visible): TikTok · Facebook · Instagram -->
+        <g class="tile-in">
+          <g transform="translate(1016,132)">
+            <circle r="14" fill="#111"/>
+            <path d="M4.5,-7 C4.8,-4.2 6.6,-2 9,-1.6 L9,2 C6.7,1.9 4.9,1.1 3.4,0 L3.4,4.6 A5.4,5.4 0 1 1 -1.8,-0.8 L-1.8,2.9 A2,2 0 1 0 0.2,4.9 L0.2,-7 Z" fill="#EE1D52" transform="translate(-1,1)" opacity=".85"/>
+            <path d="M4.5,-7 C4.8,-4.2 6.6,-2 9,-1.6 L9,2 C6.7,1.9 4.9,1.1 3.4,0 L3.4,4.6 A5.4,5.4 0 1 1 -1.8,-0.8 L-1.8,2.9 A2,2 0 1 0 0.2,4.9 L0.2,-7 Z" fill="#69C9D0" transform="translate(1,-1)" opacity=".85"/>
+            <path d="M4.5,-7 C4.8,-4.2 6.6,-2 9,-1.6 L9,2 C6.7,1.9 4.9,1.1 3.4,0 L3.4,4.6 A5.4,5.4 0 1 1 -1.8,-0.8 L-1.8,2.9 A2,2 0 1 0 0.2,4.9 L0.2,-7 Z" fill="#fff"/>
+          </g>
+          <g transform="translate(1072,126)">
+            <circle r="14" fill="#1877F2"/>
+            <path d="M2.4,-7 C-.3,-7 -2,-5.4 -2,-2.8 L-2,-0.5 L-4.6,-0.5 L-4.6,2.9 L-2,2.9 L-2,10 L1.6,10 L1.6,2.9 L4.4,2.9 L4.9,-0.5 L1.6,-0.5 L1.6,-2.2 C1.6,-3.2 2,-3.8 3.2,-3.8 L5,-3.8 L5,-6.8 C4.4,-6.9 3.4,-7 2.4,-7 Z" fill="#fff"/>
+          </g>
+          <g transform="translate(1128,132)">
+            <rect x="-14" y="-14" width="28" height="28" rx="9" fill="#E1306C"/>
+            <rect x="-8.5" y="-8.5" width="17" height="17" rx="5.5" fill="none" stroke="#fff" stroke-width="2"/>
+            <circle r="3.6" fill="none" stroke="#fff" stroke-width="2"/>
+            <circle cx="5.6" cy="-5.6" r="1.5" fill="#fff"/>
+          </g>
+          <g transform="translate(1184,126)">
+            <circle r="14" fill="#fff"/>
+            <g fill="none" stroke-width="3.9">
+              <path d="M6.4,-6.4 A9,9 0 0 1 6.4,6.4" stroke="#4285F4"/>
+              <path d="M6.4,-6.4 A9,9 0 0 0 -6.4,-6.4" stroke="#EA4335"/>
+              <path d="M-6.4,-6.4 A9,9 0 0 0 -6.4,6.4" stroke="#FBBC05"/>
+              <path d="M-6.4,6.4 A9,9 0 0 0 6.4,6.4" stroke="#34A853"/>
+            </g>
+            <rect x="1.4" y="-2" width="8" height="4" fill="#4285F4"/>
+          </g>
+        </g>
+        <g fill="none" stroke-linecap="round">
+          <path d="M1016,146 C1010,150 1004,151 998,151" stroke="#D9C89A" stroke-width="3" opacity=".45"/>
+          <path d="M1016,146 C1010,150 1004,151 998,151" stroke="#F0E3BC" stroke-width="1.8" opacity=".55"/>
+          <path d="M1072,140 C1050,150 1018,151 998,151" stroke="#D9C89A" stroke-width="3" opacity=".45"/>
+          <path d="M1072,140 C1050,150 1018,151 998,151" stroke="#F0E3BC" stroke-width="1.8" opacity=".55"/>
+          <path d="M1128,146 C1090,154 1030,152 998,151" stroke="#D9C89A" stroke-width="3" opacity=".45"/>
+          <path d="M1128,146 C1090,154 1030,152 998,151" stroke="#F0E3BC" stroke-width="1.8" opacity=".55"/>
+          <path d="M1184,140 C1130,152 1040,152 998,151" stroke="#D9C89A" stroke-width="3" opacity=".45"/>
+          <path d="M1184,140 C1130,152 1040,152 998,151" stroke="#F0E3BC" stroke-width="1.8" opacity=".55"/>
+        </g>
+
+        <!-- Homepage → Collections branch road -->
+        <use href="#branchHC" fill="none" stroke="#DFD0A6" stroke-width="16" stroke-linecap="round" opacity=".85"/>
+        <use href="#branchHC" fill="none" stroke="var(--sand)" stroke-width="11" stroke-linecap="round" opacity=".9"/>
+        <use href="#branchHC" class="trail-dash" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity=".85" style="animation-duration:2.2s"/>
+        <!-- Collections → Product Page branch road (shoppers cross-shop) -->
+        <use href="#branchCP" fill="none" stroke="#DFD0A6" stroke-width="16" stroke-linecap="round" opacity=".85"/>
+        <use href="#branchCP" fill="none" stroke="var(--sand)" stroke-width="11" stroke-linecap="round" opacity=".9"/>
+        <use href="#branchCP" class="trail-dash" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity=".85" style="animation-duration:2.4s"/>
+
+        <use href="#trailNear" fill="none" stroke="#D9C89A" stroke-width="30" stroke-linecap="round"/>
+        <use href="#trailNear" fill="none" stroke="var(--sand)" stroke-width="24" stroke-linecap="round"/>
+        <use href="#trailNear" class="trail-dash" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity=".9"/>
+
+        <!-- mini pages on the branches -->
+        <g class="tile-in t4">
+          <g transform="translate(720,322) skewX(-14) scale(1,.94)" opacity=".92">
+            <rect x="4" y="6" width="115" height="58" rx="7" fill="#CBBD93" opacity=".55"/>
+            <rect x="0" y="0" width="115" height="58" rx="7" fill="#FFFDF4" stroke="#DCCFA9" stroke-width="1.2"/>
+            <rect x="0" y="0" width="115" height="10" rx="7" fill="#F1EAD3"/><rect x="0" y="5" width="115" height="5" fill="#F1EAD3"/>
+            <circle cx="7" cy="5" r="1.6" fill="#E8574B"/><circle cx="13" cy="5" r="1.6" fill="#F4C542"/>
+            <rect x="8" y="16" width="31" height="16" rx="2" class="wf"/><rect x="42" y="16" width="31" height="16" rx="2" class="wf"/><rect x="76" y="16" width="31" height="16" rx="2" class="wf"/>
+            <rect x="8" y="36" width="31" height="16" rx="2" class="wf"/><rect x="42" y="36" width="31" height="16" rx="2" class="wf"/><rect x="76" y="36" width="31" height="16" rx="2" class="wf"/>
+          </g>
+          <text class="st-label mini" x="777" y="400" text-anchor="middle">COLLECTIONS</text>
+        </g>
+
+        <!-- ===== PAGE TILES ===== -->
+        <g class="tile-in">
+          <g transform="translate(700,96) skewX(-14) scale(1,.94)">
+            <rect x="7" y="9" width="230" height="120" rx="10" fill="#CBBD93" opacity=".6"/>
+            <rect x="0" y="0" width="230" height="120" rx="10" fill="#FFFDF4" stroke="#DCCFA9" stroke-width="1.5" filter="url(#softShadow)"/>
+            <rect x="0" y="0" width="230" height="16" rx="10" fill="#F1EAD3"/>
+            <rect x="0" y="8" width="230" height="8" fill="#F1EAD3"/>
+            <circle cx="10" cy="8" r="2.2" fill="#E8574B"/><circle cx="18" cy="8" r="2.2" fill="#F4C542"/><circle cx="26" cy="8" r="2.2" fill="#96BF48"/>
+            <text class="urltxt" x="115" y="11" text-anchor="middle">yourstore.com</text>
+            <rect x="221" y="20" width="4" height="92" rx="2" fill="rgba(34,48,31,.08)"/>
+            <rect id="thumb0" class="thumbEl" x="220.5" y="22" width="5" height="20" rx="2.5"/>
+            <rect x="12" y="22" width="196" height="7" rx="2" class="wf"/>
+            <rect id="fb0" x="12" y="33" width="196" height="46" rx="4" class="wf fb"/>
+            <circle cx="40" cy="46" r="5" fill="#F4C542"/>
+            <path d="M22,76 L52,52 L74,68 L92,56 L120,76 Z" fill="#C9DDB8"/>
+            <rect x="12" y="85" width="60" height="26" rx="3" class="wf"/>
+            <rect x="80" y="85" width="60" height="26" rx="3" class="wf"/>
+            <rect x="148" y="85" width="60" height="26" rx="3" class="wf"/>
+          </g>
+        </g>
+
+        <g class="tile-in t2">
+          <g transform="translate(1078,326) skewX(-14) scale(1,.94)">
+            <rect x="7" y="9" width="230" height="130" rx="10" fill="#CBBD93" opacity=".6"/>
+            <rect x="0" y="0" width="230" height="130" rx="10" fill="#FFFDF4" stroke="#DCCFA9" stroke-width="1.5" filter="url(#softShadow)"/>
+            <rect x="0" y="0" width="230" height="16" rx="10" fill="#F1EAD3"/>
+            <rect x="0" y="8" width="230" height="8" fill="#F1EAD3"/>
+            <circle cx="10" cy="8" r="2.2" fill="#E8574B"/><circle cx="18" cy="8" r="2.2" fill="#F4C542"/><circle cx="26" cy="8" r="2.2" fill="#96BF48"/>
+            <text class="urltxt" x="115" y="11" text-anchor="middle">/products/classic-tee</text>
+            <rect x="221" y="20" width="4" height="102" rx="2" fill="rgba(34,48,31,.08)"/>
+            <rect id="thumb1" class="thumbEl" x="220.5" y="22" width="5" height="20" rx="2.5"/>
+            <rect x="12" y="24" width="92" height="72" rx="4" class="wf"/>
+            <circle cx="34" cy="42" r="5" fill="#F4C542"/>
+            <path d="M18,90 L44,64 L62,78 L78,68 L98,90 Z" fill="#C9DDB8"/>
+            <circle cx="48" cy="103" r="2.5" fill="rgba(34,48,31,.25)"/><circle cx="58" cy="103" r="2.5" fill="rgba(34,48,31,.12)"/><circle cx="68" cy="103" r="2.5" fill="rgba(34,48,31,.12)"/>
+            <rect x="114" y="26" width="90" height="7" rx="2" class="wf"/>
+            <rect x="114" y="37" width="64" height="7" rx="2" class="wf"/>
+            <rect x="114" y="50" width="40" height="8" rx="2" fill="#F4C542" opacity=".8"/>
+            <rect x="114" y="64" width="16" height="12" rx="2" class="fld"/>
+            <rect x="134" y="64" width="16" height="12" rx="2" class="fld"/>
+            <rect x="154" y="64" width="16" height="12" rx="2" class="fld"/>
+            <rect x="174" y="64" width="16" height="12" rx="2" class="fld"/>
+            <rect id="fb1" x="114" y="82" width="84" height="11" rx="2" class="wf fb"/>
+            <rect x="114" y="99" width="92" height="20" rx="10" class="wfbtn"/>
+            <text class="btxt" x="160" y="112" text-anchor="middle">ADD TO CART</text>
+          </g>
+        </g>
+
+        <g class="tile-in t3">
+          <g transform="translate(712,500) skewX(-14) scale(1,.94)">
+            <rect x="7" y="9" width="230" height="120" rx="10" fill="#CBBD93" opacity=".6"/>
+            <rect x="0" y="0" width="230" height="120" rx="10" fill="#FFFDF4" stroke="#DCCFA9" stroke-width="1.5" filter="url(#softShadow)"/>
+            <rect x="0" y="0" width="230" height="16" rx="10" fill="#F1EAD3"/>
+            <rect x="0" y="8" width="230" height="8" fill="#F1EAD3"/>
+            <circle cx="10" cy="8" r="2.2" fill="#E8574B"/><circle cx="18" cy="8" r="2.2" fill="#F4C542"/><circle cx="26" cy="8" r="2.2" fill="#96BF48"/>
+            <text class="urltxt" x="115" y="11" text-anchor="middle">/checkout</text>
+            <rect x="221" y="20" width="4" height="92" rx="2" fill="rgba(34,48,31,.08)"/>
+            <rect id="thumb2" class="thumbEl" x="220.5" y="22" width="5" height="20" rx="2.5"/>
+            <rect x="12" y="24" width="80" height="7" rx="2" class="wf"/>
+            <rect x="12" y="38" width="196" height="15" rx="3" class="fld"/>
+            <rect x="18" y="43" width="52" height="5" rx="1.5" fill="rgba(34,48,31,.15)"/>
+            <rect id="fb2" x="12" y="59" width="196" height="15" rx="3" class="fld fb"/>
+            <rect x="18" y="64" width="70" height="5" rx="1.5" fill="rgba(34,48,31,.15)"/>
+            <rect x="12" y="82" width="110" height="22" rx="11" fill="#3F8C46"/>
+            <text class="btxt" x="67" y="96" text-anchor="middle">PAY NOW →</text>
+          </g>
+        </g>
+
+        <g class="station" id="stHome"><circle class="st-ring" cx="833" cy="214" r="13"/><circle class="st-core" cx="833" cy="214" r="4"/></g>
+        <g class="station" id="stPdp"><circle class="st-ring" cx="1188" cy="398" r="13"/><circle class="st-core" cx="1188" cy="398" r="4"/></g>
+        <g class="station" id="stCk"><circle class="st-ring" cx="827" cy="562" r="13"/><circle class="st-core" cx="827" cy="562" r="4"/></g>
+
+        <text class="st-label" x="792" y="248" text-anchor="middle">HOMEPAGE</text>
+        <text class="st-label" x="1193" y="478" text-anchor="middle">PRODUCT PAGE</text>
+        <text class="st-label" x="792" y="492" text-anchor="middle">CHECKOUT</text>
+
+
+        <!-- Klaviyo: where the journey continues after checkout (post-purchase) -->
+        <g transform="translate(876,748)"><g class="tile-in t3">
+          <ellipse cx="0" cy="16" rx="30" ry="6" fill="#22301F" opacity=".12"/>
+          <circle r="17" fill="#22301F"/>
+          <path d="M-6,-8 L-6,8 M-6,0 L6,-8 M-6,0 L6,8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="0" y="34" text-anchor="middle" font-size="11" font-weight="700" letter-spacing=".02em" fill="#5F7060">klaviyo</text>
+        </g></g>
+
+        <!-- branch shoppers: cross-shopping from Collections into the Product Page -->
+        <g id="trav3" transform="translate(780,270) scale(.8)"><g class="figure">
+          <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+          <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#6B4A3A"/>
+          <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#6B4A3A"/>
+          <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#D98E5A"/>
+          <circle cx="0" cy="-18" r="9" fill="#EBC49A"/>
+          <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#3A2A1E"/>
+        </g></g>
+        <g id="trav4" transform="translate(950,362) scale(.72)"><g class="figure">
+          <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+          <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#3F5B43"/>
+          <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#3F5B43"/>
+          <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#6FA88A"/>
+          <circle cx="0" cy="-18" r="9" fill="#C68642"/>
+          <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#2E2018"/>
+        </g></g>
+
+        <g id="trav0" transform="translate(830,80) scale(1)"><g class="figure">
+          <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+          <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#40506B"/>
+          <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#40506B"/>
+          <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#3E8E8C"/>
+          <rect x="11" y="1" width="9" height="11" rx="2" fill="#F4C542" stroke="#D9A82E"/>
+          <path d="M13,1 C13,-3 18,-3 18,1" fill="none" stroke="#D9A82E" stroke-width="1.4"/>
+          <circle cx="0" cy="-18" r="9" fill="#F2C6A0"/>
+          <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#4A3626"/>
+        </g></g>
+        <g id="trav1" transform="translate(755,430) scale(1.15)"><g class="figure">
+          <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+          <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#5B4A68"/>
+          <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#5B4A68"/>
+          <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#8C6BAE"/>
+          <rect x="11" y="1" width="9" height="11" rx="2" fill="#E8574B" stroke="#C4433A"/>
+          <path d="M13,1 C13,-3 18,-3 18,1" fill="none" stroke="#C4433A" stroke-width="1.4"/>
+          <circle cx="0" cy="-18" r="9" fill="#C68642"/>
+          <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#2E2018"/>
+        </g></g>
+        <g id="trav2" transform="translate(800,690) scale(1.3)"><g class="figure">
+          <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+          <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#3F5B43"/>
+          <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#3F5B43"/>
+          <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#4C7DB8"/>
+          <rect x="11" y="1" width="9" height="11" rx="2" fill="#96BF48" stroke="#6E9A2E"/>
+          <path d="M13,1 C13,-3 18,-3 18,1" fill="none" stroke="#6E9A2E" stroke-width="1.4"/>
+          <circle cx="0" cy="-18" r="9" fill="#8D5524"/>
+          <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#1E1610"/>
+        </g></g>
+      </svg>
+    </div>
+
+    <nav>
+      <div class="brand">shop <span>manager</span></div>
+      <a class="btn" href="#early-access">Get early access</a>
+    </nav>
+
+    <header class="copy" id="early-access">
+      <span class="badge">Coming soon — for Shopify stores</span>
+      <h1>See what's <em>really happening</em> in your store.</h1>
+      <p class="sub">Your website is your salesperson — and nobody's watching it work. We put eyes on your floor: every session watched, every walk-out explained, every fix ranked by what it's costing you.</p>
+
+      <div class="cap-wrap" data-capture aria-live="polite">
+        <div class="step1">
+          <form class="cap" novalidate>
+            <label class="sr" for="em-hero">Email address</label>
+            <input id="em-hero" type="email" required autocomplete="email" placeholder="you@yourstore.com">
+            <button class="btn" type="submit">Get early access →</button>
+          </form>
+          <p class="micro">Free to join · the first 100 stores lock the founding price for life</p>
+        </div>
+        <div class="step2">
+          <p class="okline">You're in. <b>✓</b></p>
+          <p>Want a head start? Drop your store URL and we'll send you a free walk-through of where you're likely losing sales. A human does this — not a bot.</p>
+          <form class="cap" novalidate>
+            <label class="sr" for="url-hero">Store URL</label>
+            <input id="url-hero" type="text" inputmode="url" required pattern="[^ ]+\.[^ ]+" autocomplete="url" placeholder="yourstore.com">
+            <button class="btn" type="submit">Walk my floor</button>
+          </form>
+        </div>
+        <div class="step3">
+          <p class="okline">On the clipboard. <b>✓</b></p>
+          <p>Watch your inbox.</p>
+        </div>
+      </div>
+
+      <!-- compact journey (mobile): sources → your store, watched -->
+      <div class="mini-journey" aria-hidden="true">
+        <svg viewBox="0 0 360 334" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="180" cy="318" rx="210" ry="36" fill="#C9E3B2" opacity=".4"/>
+          <g fill="none" stroke-linecap="round">
+            <path d="M-14,32 C50,40 120,44 190,60 C250,74 276,84 268,108 C254,148 170,136 150,162 C138,180 140,196 162,214 C182,232 196,258 220,286 C246,312 300,318 372,306" stroke="#D9C89A" stroke-width="11"/>
+            <path d="M-14,32 C50,40 120,44 190,60 C250,74 276,84 268,108 C254,148 170,136 150,162 C138,180 140,196 162,214 C182,232 196,258 220,286 C246,312 300,318 372,306" stroke="#F0E3BC" stroke-width="8"/>
+            <path id="mj2Rail" d="M-14,32 C50,40 120,44 190,60 C250,74 276,84 268,108 C254,148 170,136 150,162 C138,180 140,196 162,214 C182,232 196,258 220,286 C246,312 300,318 372,306" stroke="#FFFFFF" stroke-width="1.8" opacity=".9" class="trail-dash"/>
+          </g>
+          <g transform="translate(16,52)" opacity=".6">
+            <g><circle r="7.5" fill="#1B1B1F"/><text y="3.2" text-anchor="middle" font-size="9" fill="#fff">&#9835;</text></g>
+            <g transform="translate(21,0)"><circle r="7.5" fill="#1877F2"/><path transform="translate(.6,-.4) scale(.9)" d="M1,-5 C-.6,-5 -1.4,-4 -1.4,-2.6 L-1.4,-1.4 L-3,-1.4 L-3,.8 L-1.4,.8 L-1.4,5.4 L1,5.4 L1,.8 L2.7,.8 L3,-1.4 L1,-1.4 L1,-2.5 C1,-3.1 1.2,-3.3 1.8,-3.3 L3.1,-3.3 L3.1,-5 Z" fill="#fff"/></g>
+            <g transform="translate(42,0)" fill="none" stroke="#C13584" stroke-width="1.5"><rect x="-6" y="-6" width="12" height="12" rx="3.5"/><circle r="2.8"/></g>
+            <g transform="translate(63,0)"><path transform="scale(.82)" d="M9.6,-1.6 L.2,-1.6 L.2,2.2 L5.5,2.2 C4.8,4.8 2.6,6.4 -.2,6.4 A6.6,6.6 0 0 1 -.2,-6.6 C1.5,-6.6 3,-6 4.2,-5 L7,-7.8 A10.4,10.4 0 1 0 9.8,.6 Z" fill="#5F7060"/></g>
+          </g>
+          <g transform="translate(296,150)"><circle cy="4" r="12" fill="#6FB061"/><circle cx="-9" cy="9" r="7" fill="#5FA052"/><circle cx="9" cy="9" r="7" fill="#5FA052"/></g>
+          <g transform="translate(26,290)"><circle cy="4" r="10" fill="#6FB061"/><circle cx="-8" cy="9" r="6" fill="#5FA052"/><circle cx="8" cy="9" r="6" fill="#5FA052"/></g>
+
+          <g transform="translate(240,26)">
+            <rect width="104" height="74" rx="7" fill="#FFFDF4" stroke="#DCCFA9"/>
+            <rect width="104" height="13" rx="7" fill="#F1EAD3"/><rect y="6.5" width="104" height="6.5" fill="#F1EAD3"/>
+            <circle cx="7" cy="6.5" r="1.8" fill="#E8574B"/><circle cx="13" cy="6.5" r="1.8" fill="#F4C542"/><circle cx="19" cy="6.5" r="1.8" fill="#96BF48"/>
+            <text x="52" y="9.5" text-anchor="middle" font-size="6" font-weight="600" fill="#5F7060">yourstore.com</text>
+            <rect x="8" y="19" width="88" height="24" rx="3" class="wf"/>
+            <path d="M14,41 L30,26 L40,34 L48,28 L60,41 Z" fill="#C9DDB8"/>
+            <rect x="8" y="49" width="27" height="18" rx="2.5" class="wf"/><rect x="38.5" y="49" width="27" height="18" rx="2.5" class="wf"/><rect x="69" y="49" width="27" height="18" rx="2.5" class="wf"/>
+          </g>
+          <text x="292" y="113" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing=".13em" fill="#5F7060">HOMEPAGE</text>
+
+          <g transform="translate(26,140)">
+            <rect width="120" height="88" rx="8" fill="#FFFDF4" stroke="#DCCFA9"/>
+            <rect width="120" height="14" rx="8" fill="#F1EAD3"/><rect y="7" width="120" height="7" fill="#F1EAD3"/>
+            <circle cx="8" cy="7" r="2" fill="#E8574B"/><circle cx="15" cy="7" r="2" fill="#F4C542"/><circle cx="22" cy="7" r="2" fill="#96BF48"/>
+            <text x="60" y="10" text-anchor="middle" font-size="6.5" font-weight="600" fill="#5F7060">/products/classic-tee</text>
+            <rect x="8" y="20" width="46" height="56" rx="4" class="wf"/>
+            <path d="M12,68 L26,52 L34,60 L42,54 L50,68 Z" fill="#C9DDB8"/>
+            <rect x="60" y="22" width="52" height="6" rx="2" class="wf"/>
+            <rect x="60" y="32" width="38" height="5" rx="2" class="wf"/>
+            <rect x="60" y="44" width="52" height="10" rx="3" class="fld"/>
+            <rect x="60" y="60" width="52" height="13" rx="6.5" fill="#96BF48"/>
+            <text x="86" y="69" text-anchor="middle" font-size="6" font-weight="700" letter-spacing=".06em" fill="#fff">ADD TO CART</text>
+          </g>
+          <text x="86" y="241" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing=".13em" fill="#5F7060">PRODUCT</text>
+
+          <g transform="translate(214,226)">
+            <rect width="120" height="88" rx="8" fill="#FFFDF4" stroke="#DCCFA9"/>
+            <rect width="120" height="14" rx="8" fill="#F1EAD3"/><rect y="7" width="120" height="7" fill="#F1EAD3"/>
+            <circle cx="8" cy="7" r="2" fill="#E8574B"/><circle cx="15" cy="7" r="2" fill="#F4C542"/><circle cx="22" cy="7" r="2" fill="#96BF48"/>
+            <text x="60" y="10" text-anchor="middle" font-size="6.5" font-weight="600" fill="#5F7060">/checkout</text>
+            <rect x="8" y="22" width="104" height="11" rx="3" class="fld"/>
+            <rect x="8" y="38" width="104" height="11" rx="3" class="fld"/>
+            <rect x="8" y="60" width="62" height="15" rx="7.5" fill="#3F8C46"/>
+            <rect x="8" y="60" width="62" height="15" rx="7.5" fill="#96BF48" class="mj2-pay"/>
+            <text x="39" y="70" text-anchor="middle" font-size="6.5" font-weight="700" letter-spacing=".06em" fill="#fff">PAY NOW &#8594;</text>
+          </g>
+          <text x="274" y="326" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing=".13em" fill="#5F7060">CHECKOUT</text>
+
+          <g class="mj2-ring" transform="translate(112,189)">
+            <circle r="7" fill="rgba(232,87,75,.15)" stroke="#E8574B" stroke-width="1.6">
+              <animate attributeName="r" values="5;9;5" dur="1.6s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2" fill="#E8574B"/>
+          </g>
+          <g class="mj2-check" transform="translate(112,189)">
+            <circle r="9" fill="#96BF48"/>
+            <path d="M-4,0 L-1.2,3.2 L4.5,-3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <g transform="translate(52,114)"><g class="mj2-warn">
+            <rect width="184" height="22" rx="11" fill="#FFFFFF" stroke="rgba(34,48,31,.14)"/>
+            <g transform="translate(13,11)"><path d="M0,-6 L5.6,4.4 L-5.6,4.4 Z" fill="#F4C542"/><rect x="-.7" y="-2.4" width="1.4" height="4" rx=".7" fill="#22301F"/><circle cy="3" r=".8" fill="#22301F"/></g>
+            <text x="24" y="15" font-size="9.5" font-weight="600" fill="#22301F">Stuck on size guide &#183; 11.4s</text>
+          </g></g>
+          <g transform="translate(60,114)"><g class="mj2-fixpill">
+            <rect width="168" height="22" rx="11" fill="#FFFFFF" stroke="rgba(63,140,70,.5)"/>
+            <text x="12" y="15" font-size="9.5" font-weight="700" fill="#3F8C46">&#10003; Fixed &#8212; shipping shown</text>
+          </g></g>
+          <g transform="translate(226,198)"><g class="mj2-cash">
+            <rect width="100" height="22" rx="11" fill="#FFF8E6" stroke="#D9A82E"/>
+            <text x="12" y="15" font-size="10" font-weight="800" fill="#8A6320">+$2,140/mo</text>
+          </g></g>
+
+          <g class="mj2-walk"><g transform="scale(.55)"><g class="figure">
+            <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+            <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#40506B"/>
+            <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#40506B"/>
+            <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#3E8E8C"/>
+            <rect x="11" y="1" width="9" height="11" rx="2" fill="#F4C542" stroke="#D9A82E"/>
+            <circle cx="0" cy="-18" r="9" fill="#F2C6A0"/>
+            <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#4A3626"/>
+          </g></g></g>
+        </svg>
+      </div>
+      
+    </header>
+
+
+  </div>
+</section>
+
+<!-- page journey: the visitor's own path down the page, in three depth layers -->
+<div id="journey" aria-hidden="true">
+  <svg id="jsvg" xmlns="http://www.w3.org/2000/svg">
+    <path id="jrail" d="" fill="none" stroke="none"/>
+    <path id="jsurf1" d="" fill="none" stroke="#D9C89A" stroke-width="26" stroke-linecap="round"/>
+    <path id="jsurf2" d="" fill="none" stroke="#F0E3BC" stroke-width="20" stroke-linecap="round"/>
+    <path id="jsurf3" d="" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".85" class="trail-dash"/>
+    <path id="junder" d="" fill="none" stroke="#C9B784" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round" opacity=".5"/>
+    <g id="jextras"></g>
+    <g id="jmilestones"></g>
+  </svg>
+</div>
+<div id="journeyTop" aria-hidden="true">
+  <svg id="jtsvg" xmlns="http://www.w3.org/2000/svg">
+    <g id="heroFindLink">
+      <path d="" fill="none" stroke="rgba(63,140,70,.5)" stroke-width="1.4" stroke-dasharray="1.5 7" stroke-linecap="round" class="trail-dash" style="animation-duration:3s"/>
+      <circle class="n1" r="3.4" fill="#96BF48"/>
+      <g class="n2"><circle r="4.5" fill="none" stroke="#96BF48" stroke-width="1.4"/><circle r="1.8" fill="#96BF48"/></g>
+    </g>
+    <path id="jover1" d="" fill="none" stroke="#D9C89A" stroke-width="26" stroke-linecap="round"/>
+    <path id="jover2" d="" fill="none" stroke="#F0E3BC" stroke-width="20" stroke-linecap="round"/>
+    <path id="jover3" d="" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".85" class="trail-dash"/>
+  </svg>
+</div>
+<svg id="jwalker" viewBox="-30 -42 60 80" role="img" aria-label="Your visit, shown as a shopper walking the page. Hover for your session log.">
+  <g class="figure">
+    <ellipse cx="0" cy="26" rx="13" ry="3.6" fill="#22301F" opacity=".16"/>
+    <rect class="legL" x="-6.5" y="10" width="5" height="14" rx="2.5" fill="#40506B"/>
+    <rect class="legR" x="1.5" y="10" width="5" height="14" rx="2.5" fill="#40506B"/>
+    <rect x="-10" y="-10" width="20" height="25" rx="9" fill="#3E8E8C"/>
+    <rect class="arm" x="7" y="-6" width="4.5" height="13" rx="2.2" fill="#357C7A"/>
+    <rect x="11" y="1" width="9" height="11" rx="2" fill="#F4C542" stroke="#D9A82E"/>
+    <path d="M13,1 C13,-3 18,-3 18,1" fill="none" stroke="#D9A82E" stroke-width="1.4"/>
+    <circle class="bi bi1" cx="15.5" cy="-1" r="2" fill="#E8574B"/>
+    <circle class="bi bi2" cx="15.5" cy="-5" r="2" fill="#96BF48"/>
+    <circle class="bi bi3" cx="15.5" cy="-9" r="2" fill="#5B8DEF"/>
+    <circle cx="0" cy="-18" r="9" fill="#F2C6A0"/>
+    <path d="M-9,-20 A9,9 0 0 1 9,-20 L9,-24 A9,7 0 0 0 -9,-24 Z" fill="#4A3626"/>
+  </g>
+</svg>
+<div id="journeyFx" aria-hidden="true"></div>
+<div id="jbar" aria-hidden="true"><svg id="jbarsvg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+
+<!-- ================= 3 · STAKES ================= -->
+<section class="sec stakes" id="s-stakes">
+  <div class="wrap rev">
+    <div>
+      <p class="lead">you paid to get 100 people through the door today…</p>
+      <p class="big">97 walked out.</p>
+      <p class="note">nobody saw why. most stores never find out.</p>
+    </div>
+    <svg class="dotgrid" width="228" height="228" viewBox="0 0 228 228" role="img" aria-label="Of 100 visitors, 3 buy and 97 leave unseen">
+      <defs>
+        <pattern id="dg" width="23" height="23" patternUnits="userSpaceOnUse">
+          <circle cx="11" cy="11" r="3.4" fill="rgba(246,247,239,.22)"/>
+        </pattern>
+      </defs>
+      <rect width="228" height="228" fill="url(#dg)"/>
+      <circle cx="11" cy="11" r="3.6" fill="#96BF48"/>
+      <circle cx="34" cy="11" r="3.6" fill="#96BF48"/>
+      <circle cx="57" cy="11" r="3.6" fill="#96BF48"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ================= FINDINGS: watch it work ================= -->
+<section class="sec findings" id="s-findings">
+ <div class="findings-pin">
+  <div class="wrap">
+    <h2 class="rev">Watch it work.</h2>
+    <p class="lede rev">One friction point — from the session we watched to the revenue you get back.</p>
+  </div>
+  <div class="coverflow-wrap rev">
+    <button class="cf-arrow prev" type="button" aria-label="Previous card">‹</button>
+    <button class="cf-arrow next" type="button" aria-label="Next card">›</button>
+    <div class="coverflow" id="coverflow" role="list">
+
+      <article class="cf-card cf-you" role="listitem">
+        <div class="cf-num">01 · DATA COLLECTED</div>
+        <h3>This is you, right now.</h3>
+        <p class="cf-sub"><b>We watch.</b> That walker following you down the page is your session — every move, recorded and mapped.</p>
+        <div class="cf-viz">
+          <div class="cf-you-row">
+            <svg class="cf-you-fig" viewBox="-16 -30 32 46" width="42" height="60" aria-hidden="true"><g class="figure">
+              <ellipse cx="0" cy="14" rx="10" ry="2.6" fill="#22301F" opacity=".16"/>
+              <rect class="legL" x="-5" y="4" width="4" height="11" rx="2" fill="#40506B"/>
+              <rect class="legR" x="1" y="4" width="4" height="11" rx="2" fill="#40506B"/>
+              <rect x="-8" y="-8" width="16" height="20" rx="7" fill="#3E8E8C"/>
+              <circle cx="0" cy="-15" r="7.5" fill="#F2C6A0"/>
+              <path d="M-7.5,-16 A7.5,7.5 0 0 1 7.5,-16 L7.5,-19.5 A7.5,6 0 0 0 -7.5,-19.5 Z" fill="#4A3626"/>
+            </g></svg>
+            <div class="cf-log" style="flex:1">
+              <h5><span class="rec"></span>Your session — live</h5>
+              <ul id="cfLiveLog">
+                <li><b>0:00</b><span>▶ session started</span></li>
+              </ul>
+            </div>
+          </div>
+          <p class="cf-hint">This is the card your walker shows on hover — try it.</p>
+        </div>
+      </article>
+
+      <article class="cf-card" role="listitem">
+        <div class="cf-num">02 · FOUND &amp; PROVEN</div>
+        <h3>Product page hesitation.</h3>
+        <p class="cf-sub"><b>We find it, and prove it.</b> Where others see a bounce, we see a shopper stuck on the size guide — then confirm it's real across 212 sessions before anyone touches the page.</p>
+        <div class="cf-viz">
+          <div class="thumb" style="height:120px">
+            <span class="wire" style="left:10px;top:84px;width:96px;height:7px"></span>
+            <span class="wire" style="left:10px;top:98px;width:68px;height:7px"></span>
+            <span class="wire" style="right:10px;top:12px;width:48px;height:9px"></span>
+            <span class="wire" style="right:10px;top:30px;width:48px;height:6px;opacity:.6"></span>
+            <span class="wire" style="right:10px;top:44px;width:48px;height:6px;opacity:.6"></span>
+            <span class="wire" style="right:10px;top:66px;width:48px;height:14px;background:rgba(63,140,70,.2);border:1px solid rgba(63,140,70,.4)"></span>
+            <div class="heat"></div>
+            <div class="deadclick">✕</div>
+          </div>
+          <div class="cf-conf" style="margin-top:12px"><span>Confidence</span><span class="bar"><i></i></span><span>High · 212 left</span></div>
+        </div>
+      </article>
+
+      <article class="cf-card" role="listitem">
+        <div class="cf-num">03 · FIX &amp; A/B TEST</div>
+        <h3>We test the fix — not guess it.</h3>
+        <p class="cf-sub"><b>We design it, then test it.</b> A change that fits your brand, run head-to-head against your current page. It ships for good only if it lifts revenue.</p>
+        <div class="cf-viz">
+          <div class="cf-ba">
+            <div class="cf-frame">
+              <span class="tag">Control</span>
+              <span class="wl" style="top:34px;width:70%"></span>
+              <span class="wl" style="top:46px;width:50%"></span>
+              <span class="wl" style="top:58px;width:60%"></span>
+            </div>
+            <div class="cf-frame after">
+              <span class="tag">Variant</span>
+              <span class="wl" style="top:34px;width:70%"></span>
+              <span class="wl" style="top:46px;width:50%"></span>
+              <span class="ship">FREE SHIPPING OVER $50</span>
+            </div>
+          </div>
+          <div class="cf-conf" style="margin-top:12px"><span>Variant wins</span><span class="bar"><i></i></span><span>+$2,140/mo</span></div>
+        </div>
+      </article>
+
+      <article class="cf-card" role="listitem">
+        <div class="cf-num">04 · DEV &amp; DEPLOY</div>
+        <h3>We ship the winner, safely.</h3>
+        <p class="cf-sub"><b>We build it.</b> The winning variant goes live in clean code — nothing bolted on, nothing that slows your store down.</p>
+        <div class="cf-viz">
+          <div class="cf-code">
+            <div><span class="c">// shipping-banner.liquid</span></div>
+            <div><span class="k">&lt;div</span> class=<span class="s">"ship-note"</span><span class="k">&gt;</span></div>
+            <div>&nbsp;&nbsp;Free shipping over $50</div>
+            <div><span class="k">&lt;/div&gt;</span></div>
+          </div>
+          <div class="cf-deploy">✓ Deployed <span class="ab">winner live</span></div>
+        </div>
+      </article>
+
+      <article class="cf-card" role="listitem">
+        <div class="cf-num">05 · CVR &amp; REVENUE</div>
+        <h3>You get the revenue back.</h3>
+        <p class="cf-sub"><b>You grow.</b> Measured in dollars, proven by the test — then on to the next leak.</p>
+        <div class="cf-viz">
+          <div class="cf-result">
+            <div class="big">+$2,140<span style="font-size:16px">/mo</span></div>
+            <div class="cvr">CVR <s>1.0%</s> → <span class="up">1.4%</span></div>
+            <svg class="cf-spark" viewBox="0 0 240 56" width="100%" height="56" preserveAspectRatio="none">
+              <path d="M4,44 L52,42 L100,40 L148,30 L196,18 L236,8" fill="none" stroke="#96BF48" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4,44 L52,42 L100,40 L148,30 L196,18 L236,8 L236,56 L4,56 Z" fill="rgba(150,191,72,.14)"/>
+              <circle cx="236" cy="8" r="4" fill="#3F8C46"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <div class="cf-dots" id="cfDots" role="tablist" aria-label="Carousel position"></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= 4 · PROOF ================= -->
+<section class="sec proof" id="s-proof">
+  <div class="wrap rev">
+    <figure class="proofcard">
+      <blockquote>At 0:41, on mobile, she scrolled back up twice looking for shipping info. Didn't find it. Left.</blockquote>
+      <figcaption>— your reports read like this. specific enough to act on tonight.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= 5 · GUIDE ================= -->
+<section class="sec guide" id="s-guide">
+  <div class="wrap">
+    <div class="rev">
+      <h2>It's not your product. And it's not you.</h2>
+      <p class="body">Your theme was designed to look good — not to sell. Your apps hand you dashboards and call it insight. The gurus keep saying "more ads." We've spent four years watching real customers inside real Shopify stores. <b>The sale is usually lost in a handful of small, invisible moments. Once you can see them, they're fixable.</b></p>
+    </div>
+    <div class="receipts rev">
+      <div class="stat"><div class="n">1% → 6%</div><div class="l">store conversion, 8 weeks</div></div>
+      <div class="stat"><div class="n">+200%</div><div class="l">product-page conversion</div></div>
+      <div class="stat"><div class="n">4 years</div><div class="l">watching real stores, by hand</div></div>
+      <p class="fineprint">real client results, anonymized — their numbers are their business.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6 · PLAN ================= -->
+<section class="sec plan" id="s-plan">
+  <div class="wrap">
+    <h2 class="rev">Three steps to a store that sells.</h2>
+    <div class="steps">
+      <div class="step rev">
+        <div class="num">1</div>
+        <h3>We put eyes on your floor.</h3>
+        <p>Every session is watched and mapped — every click, scroll, and hesitation, the way a real customer moves through it, not just a pageview count.</p>
+      </div>
+      <div class="step rev">
+        <div class="num">2</div>
+        <h3>We find the leaks.</h3>
+        <p>Each week you get the three moments costing you the most — ranked by lost revenue, with the replays that prove it.</p>
+      </div>
+      <div class="step rev">
+        <div class="num">3</div>
+        <h3>Fix what matters. Measure. Repeat.</h3>
+        <p>Biggest leak first, plain-English fix, and proof it worked. That's the whole system.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7 · TRANSFORMATION ================= -->
+<section class="sec transform" id="s-transform">
+  <div class="wrap rev">
+    <h2>From <em>guessing</em> to <span class="spark"><b>knowing</b></span>.</h2>
+    <p class="body">Right now, every change to your store is a bet. <b>Once you can see what customers actually do, it's a decision</b> — you know what's broken, what it costs, and whether the fix worked. That's the difference between hoping your store grows and running one that does.</p>
+  </div>
+</section>
+
+<!-- ================= 8 · THE ARTIFACT ================= -->
+<section class="sec reportsec" id="s-report">
+  <div class="wrap">
+    <div class="rev">
+      <h2>Five minutes a week. Ranked in dollars.</h2>
+      <p class="lede">Not another dashboard. A short report you can act on: what's leaking, what it costs, what to fix first.</p>
+    </div>
+    <figure class="report rev" aria-label="Sample Floor Report">
+      <header>
+        <span class="rt">Floor Report — Week 12</span>
+        <span class="rd">your-store.com</span>
+      </header>
+      <div class="finding">
+        <span class="fno">01</span>
+        <div>
+          <p class="ft">Mobile product page hides shipping info<span class="chip">fix first</span></p>
+          <p class="fd">212 customers searched for it and left · 3 replays attached</p>
+        </div>
+        <span class="fm">≈ $2,140/mo</span>
+      </div>
+      <div class="finding">
+        <span class="fno">02</span>
+        <div>
+          <p class="ft">Hero takes 3.8s before first tap works</p>
+          <p class="fd">mobile bounce up 22% before the page even loads</p>
+        </div>
+        <span class="fm">≈ $980/mo</span>
+      </div>
+      <div class="finding">
+        <span class="fno">03</span>
+        <div>
+          <p class="ft">Reviews sit below the fold on your best-seller</p>
+          <p class="fd">41 customers scrolled down-up-down at the buy button</p>
+        </div>
+        <span class="fm">≈ $610/mo</span>
+      </div>
+      <figcaption class="rfoot">sample report — yours will be about your store.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= 9 · PRICING ================= -->
+<section class="sec pricing" id="s-pricing">
+  <div class="wrap">
+    <div class="rev">
+      <h2>Three tiers. The difference is who does the work.</h2>
+      <p class="lede">Flat pricing — never a percentage of your revenue, never billed for visitors who don't convert. The first 100 stores keep the founding price forever.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier rev">
+        <h3>Manager</h3>
+        <p class="tag">We find it. You fix it.</p>
+        <p class="price">$99<small>/mo</small></p>
+        <p class="then">(then $149) — founding rate, locked for life</p>
+        <ul>
+          <li>Every session watched and mapped</li>
+          <li>Weekly Floor Report, ranked in dollars</li>
+          <li>Replay evidence for every finding</li>
+          <li>Clear fix instructions — you (or your dev) make the changes</li>
+        </ul>
+        <button class="btn oa" type="button" data-intent="manager">Lock the founding rate →</button>
+      </div>
+      <div class="tier rev">
+        <h3>Director</h3>
+        <p class="tag">We find it. We guide your hands.</p>
+        <p class="price">$349<small>/mo</small></p>
+        <p class="then">(then $499) — founding rate, locked for life</p>
+        <ul>
+          <li>Everything in Manager</li>
+          <li>Monthly strategy review with a human expert</li>
+          <li>Custom fix plans beyond the playbook</li>
+          <li>Limited seats</li>
+        </ul>
+        <button class="btn oa" type="button" data-intent="director">Lock the founding rate →</button>
+      </div>
+      <div class="tier rev">
+        <span class="flag">the outcome tier</span>
+        <h3>Done-For-You</h3>
+        <p class="tag">You read a report. We do everything else.</p>
+        <p class="price">$1,500<small>/mo</small></p>
+        <p class="then">(then $2,500) — 5 founding seats only</p>
+        <ul>
+          <li>We watch, we find, our team implements the fixes</li>
+          <li>Every change measured before and after</li>
+          <li>Monthly documented results, in dollars</li>
+          <li>Less than half a typical $3K agency retainer — full coverage, not 20 hours</li>
+        </ul>
+        <button class="btn oa" type="button" data-intent="dfy" data-cfg="callUrl">Book a call to claim a seat →</button>
+      </div>
+    </div>
+    <div class="tier-cta rev">
+      <p>Not sure which tier? A $49 audit tells you how much work your store needs — and it's credited when you join.</p>
+      <div class="tier-actions">
+        <button class="btn oa" type="button" data-intent="audit" data-cfg="auditUrl">Get the $49 audit →</button>
+        <button class="btn ghost oa" type="button" data-intent="call" data-cfg="callUrl">Book a call →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10 · VALUES ================= -->
+<section class="values" id="s-values">
+  <div class="wrap">
+    <p class="vh">What we'll never do</p>
+    <div class="row">
+      <span class="yes">honest urgency only</span>
+      <span class="no">fake timers</span>
+      <span class="no">phantom "2 left"</span>
+      <span class="no">%-of-revenue pricing</span>
+      <span class="yes">flat rate, locked for founders</span>
+    </div>
+    <p class="quiet">If we wouldn't let a client do it to their customers, we don't do it to you.</p>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec faq" id="s-faq">
+  <div class="wrap">
+    <h2 class="rev">Questions merchants ask</h2>
+    <div class="qs rev">
+      <details>
+        <summary>How is this different from free session-recording tools?</summary>
+        <p>Recordings aren't the hard part — knowing what to do with them is. Nobody has time to watch hundreds of replays. We watch them for you and hand you a short list: what's costing you the most, and how to fix it, in dollars.</p>
+      </details>
+      <details>
+        <summary>Do I need a developer?</summary>
+        <p>No. Every finding comes with a plain-English fix. On Manager, you or your dev makes the change. On Done-For-You, our team makes it for you.</p>
+      </details>
+      <details>
+        <summary>Will this slow my store down?</summary>
+        <p>Speed is one of the things we audit other stores for — we hold ourselves to the same line. If a tool costs you sales to run, it isn't worth running.</p>
+      </details>
+      <details>
+        <summary>What about my customers' privacy?</summary>
+        <p>We watch behavior, not identities — where sessions stall, where clicks die, where people leave. No personal data is sold or shared, ever.</p>
+      </details>
+      <details>
+        <summary>What does "founding price" actually mean?</summary>
+        <p>The first 100 stores keep their rate for as long as they stay. Prices rise for everyone after — never for you.</p>
+      </details>
+      <details>
+        <summary>When do I get access?</summary>
+        <p>In order of signup. Everyone on the list gets the free walk-through first — that starts before launch.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11 · FINAL CTA ================= -->
+<section class="sec final" id="s-final">
+  <div class="wrap rev">
+    <p class="kicker">100 founding spots — going in order</p>
+    <h2 style="margin-top:14px">Be one of the first hundred stores with someone on the floor.</h2>
+    <p class="sub2">A sales manager for your store: watches every customer, catches the moment they walk out, tells you how to stop it. Early access, hands-on onboarding. No card, no commitment.</p>
+
+    <div class="cap-wrap" data-capture aria-live="polite" style="margin-top:30px">
+      <div class="step1">
+        <p class="cap-lead" id="capLead">Grab a founding spot — enter your email to start.</p>
+        <form class="cap" novalidate>
+          <label class="sr" for="em-final">Email address</label>
+          <input id="em-final" type="email" required autocomplete="email" placeholder="you@yourstore.com">
+          <button class="btn" type="submit" id="capBtn">Continue →</button>
+        </form>
+        <p class="micro">Free to join · the first 100 stores lock the founding price for life</p>
+      </div>
+      <div class="step2">
+        <p class="okline">Got your email. <b>✓</b></p>
+        <p>Now drop your store URL so we know which floor to walk. A human reads this — not a bot.</p>
+        <form class="cap" novalidate>
+          <label class="sr" for="url-final">Store URL</label>
+          <input id="url-final" type="text" inputmode="url" required pattern="[^ ]+\.[^ ]+" autocomplete="url" placeholder="yourstore.com">
+          <button class="btn" type="submit">Finish →</button>
+        </form>
+      </div>
+      <div class="step3">
+        <p class="okline" id="capDone">On the clipboard. <b>✓</b></p>
+        <p id="capDoneSub">Watch your inbox.</p>
+      </div>
+    </div>
+
+    <p class="purpose">Every good product deserves a fair shot. Big brands have whole teams watching their funnels. Now you do too.</p>
+  </div>
+</section>
+
+<!-- ================= 12 · FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <span>© 2026 Shop Manager (working title)</span>
+    <span>built in public</span>
+    <a href="privacy.html">Privacy</a>
+    <span>this page loads fast on purpose</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DATA CAPTURE + ATTRIBUTION + PIXELS.
+   Fill in CONFIG below, deploy, and the page collects everything.
+   Backend script: google-apps-script.gs · Steps: GO-LIVE.md
+   Everything is optional — empty values just no-op (no errors).
+   ============================================================ */
+(function(){
+  var CONFIG = {
+    endpoint:    '',   // Google Apps Script Web App URL (writes each signup to your Sheet)
+    metaPixel:   '',   // Meta Pixel ID
+    tiktokPixel: '',   // TikTok Pixel ID
+    googleTag:   '',   // GA4 / Google Ads tag, e.g. G-XXXX or AW-XXXX
+    clarity:     '',   // Microsoft Clarity project ID (free session recording)
+    cfBeacon:    '',   // Cloudflare Web Analytics token
+    auditUrl:    '',   // $49 CRO audit payment link (Stripe/Shopify/Lemon) — opens in a new tab. Empty = capture email instead.
+    callUrl:     '',   // scheduling link (Cal.com / Calendly) — opens in a new tab. Empty = capture email instead.
+    abTest:      false // flip to true to A/B the hero headline
+  };
+
+  /* ---- attribution: capture UTMs + referrer once, reuse for both steps ---- */
+  var attr = (function(){
+    try { var s = sessionStorage.getItem('sm_attr'); if(s) return JSON.parse(s); } catch(e){}
+    var q = new URLSearchParams(location.search), a = {};
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(k){ a[k] = q.get(k) || ''; });
+    a.referrer = document.referrer || ''; a.landing = location.pathname;
+    try { sessionStorage.setItem('sm_attr', JSON.stringify(a)); } catch(e){}
+    return a;
+  })();
+
+  /* ---- headline A/B (off by default) ---- */
+  var variant = 'A';
+  if(CONFIG.abTest){
+    try { variant = sessionStorage.getItem('sm_variant') || ''; } catch(e){}
+    if(!variant){ variant = Math.random() < 0.5 ? 'A' : 'B'; try{ sessionStorage.setItem('sm_variant', variant); }catch(e){} }
+    if(variant === 'B'){ var h1 = document.querySelector('.copy h1'); if(h1) h1.innerHTML = "See what's <em>costing</em> you. Fix it."; }
+  }
+
+  /* ---- analytics + pixels (load only if configured) ---- */
+  function inject(src, attrs){ var s=document.createElement('script'); s.async=true; s.src=src; if(attrs) Object.keys(attrs).forEach(function(k){ s.setAttribute(k, attrs[k]); }); document.head.appendChild(s); return s; }
+  if(CONFIG.cfBeacon) inject('https://static.cloudflareinsights.com/beacon.min.js', {'data-cf-beacon': JSON.stringify({token: CONFIG.cfBeacon})});
+  if(CONFIG.clarity){ (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",CONFIG.clarity); }
+  if(CONFIG.metaPixel){ !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',CONFIG.metaPixel);fbq('track','PageView'); }
+  if(CONFIG.tiktokPixel){ !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.load=function(e){var i='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=i;var o=d.createElement('script');o.async=!0;o.src=i+'?sdkid='+e+'&lib='+t;var a=d.getElementsByTagName('script')[0];a.parentNode.insertBefore(o,a)};ttq.load(CONFIG.tiktokPixel);ttq.page()}(window,document,'ttq'); }
+  if(CONFIG.googleTag){ inject('https://www.googletagmanager.com/gtag/js?id='+CONFIG.googleTag); window.dataLayer=window.dataLayer||[]; window.gtag=function(){ dataLayer.push(arguments); }; gtag('js', new Date()); gtag('config', CONFIG.googleTag); }
+
+  function lead(step){
+    if(window.fbq) fbq('track', step===2 ? 'CompleteRegistration' : 'Lead');
+    if(window.ttq) ttq.track(step===2 ? 'CompleteRegistration' : 'SubmitForm');
+    if(window.gtag) gtag('event', step===2 ? 'store_url_submit' : 'email_submit');
+  }
+  function send(payload){
+    if(!CONFIG.endpoint) return;
+    payload.variant = variant; payload.ts = new Date().toISOString();
+    Object.keys(attr).forEach(function(k){ payload[k] = attr[k]; });
+    try { fetch(CONFIG.endpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload)}); } catch(e){}
+  }
+  window.__smSend = send; window.__smLead = lead; // the manager's debrief reports through the same channel
+
+  /* ---- the two-step forms ---- */
+  document.querySelectorAll('[data-capture]').forEach(function(wrap){
+    var forms = wrap.querySelectorAll('form');
+    var email = '';
+    forms[0].addEventListener('submit', function(e){
+      e.preventDefault();
+      var input = forms[0].querySelector('input');
+      if(!input.checkValidity()){ input.reportValidity(); return; }
+      email = input.value;
+      send({step:1, email:email, storeUrl:'', intent: wrap.dataset.intent || 'early-access'}); lead(1);
+      wrap.classList.add('s2');
+      forms[1].querySelector('input').focus();
+    });
+    forms[1].addEventListener('submit', function(e){
+      e.preventDefault();
+      var input = forms[1].querySelector('input');
+      if(!input.checkValidity()){ input.reportValidity(); return; }
+      send({step:2, email:email, storeUrl:input.value, intent: wrap.dataset.intent || 'early-access'}); lead(2);
+      wrap.classList.remove('s2');
+      wrap.classList.add('s3');
+      if(window.applyDone) applyDone(wrap, wrap.dataset.intent || 'early-access');
+    });
+  });
+
+  /* ---- three-offer menu: route each choice to its destination ---- */
+  (function(){
+    var wrap = document.querySelector('#s-final [data-capture]');
+    if(!wrap) return;
+    var lead = document.getElementById('capLead'), btn = document.getElementById('capBtn');
+    var COPY = {
+      'early-access': { lead: 'Grab a founding spot — enter your email to start.', btn: 'Continue →',
+                        done: 'On the clipboard. ✓', sub: "Watch your inbox." },
+      'manager':      { lead: 'Locking your founding Manager rate ($99/mo for life) — enter your email to hold it.', btn: 'Hold my Manager rate →',
+                        done: 'Manager rate held. ✓', sub: "You're on the founding list — we'll email you the moment access opens." },
+      'director':     { lead: 'Locking your founding Director rate ($349/mo for life) — enter your email to hold a seat.', btn: 'Hold my Director seat →',
+                        done: 'Director seat held. ✓', sub: "Seats are limited — we'll email you before access opens." },
+      'dfy':          { lead: 'Done-For-You is a conversation. Leave your email and we’ll set up a call about a founding seat.', btn: 'Request a DFY call →',
+                        done: 'Request received. ✓', sub: 'We’ll email you times to talk this week — only 5 founding seats.' },
+      'audit':        { lead: 'Enter your email and store URL — we’ll send your $49 audit and get started.', btn: 'Start my audit →',
+                        done: 'Audit requested. ✓', sub: 'We’ll email your payment link and kick it off within a day.' },
+      'call':         { lead: 'Enter your email — we’ll send you a couple of times that work.', btn: 'Request a call →',
+                        done: 'Request received. ✓', sub: 'We’ll email you a couple of times to talk this week.' }
+    };
+    window.applyDone = function(root, intent){
+      var d = root.querySelector('#capDone'), ds = root.querySelector('#capDoneSub');
+      if(!d) return; // hero capture has no adaptive confirmation — leave it as-is
+      var c = COPY[intent] || COPY['early-access'];
+      d.innerHTML = c.done.replace('✓', '<b>✓</b>');
+      if(ds) ds.textContent = c.sub;
+    };
+    function choose(intent){
+      var c = COPY[intent] || COPY['early-access'];
+      wrap.dataset.intent = intent;
+      if(lead) lead.textContent = c.lead;
+      if(btn) btn.textContent = c.btn;
+      // reset to step 1 in case they'd started another path
+      wrap.classList.remove('s2','s3');
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      wrap.classList.remove('pulse'); void wrap.offsetWidth; wrap.classList.add('pulse');
+      setTimeout(function(){ var i = wrap.querySelector('.step1 input'); if(i) i.focus({ preventScroll: true }); }, 380);
+    }
+    document.querySelectorAll('.oa').forEach(function(b){
+      b.addEventListener('click', function(){
+        var intent = b.dataset.intent, cfg = b.dataset.cfg, url = cfg ? CONFIG[cfg] : '';
+        if(url){ // real payment / scheduling link configured → go there
+          send({step:0, email:'', storeUrl:'', intent:intent});
+          window.open(url, '_blank', 'noopener');
+          return;
+        }
+        choose(intent); // otherwise capture the lead, tagged with what they wanted
+      });
+    });
+  })();
+
+  /* scroll reveals */
+  if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('vis'); io.unobserve(en.target); } });
+    }, {threshold:.15});
+    document.querySelectorAll('.rev').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rev').forEach(function(el){ el.classList.add('vis'); });
+  }
+  /* safety: never leave content hidden if the observer is starved (bg tabs, odd embeds) */
+  setTimeout(function(){
+    document.querySelectorAll('.rev:not(.vis)').forEach(function(el){ el.classList.add('vis'); });
+  }, 2500);
+})();
+
+/* ===== hero journey: shoppers scroll-walk the store; findings fire from their journeys ===== */
+(function(){
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var path = document.getElementById('trail');
+  if(!path) return;
+  var L = path.getTotalLength();
+  var cards = document.querySelectorAll('.card');
+
+  function tNear(px, py){
+    var best = 0, bd = Infinity;
+    for(var i = 0; i <= 400; i++){
+      var p = path.getPointAtLength(L * i / 400);
+      var d = (p.x - px) * (p.x - px) + (p.y - py) * (p.y - py);
+      if(d < bd){ bd = d; best = i / 400; }
+    }
+    return best;
+  }
+
+  var STATIONS = [
+    { t: tNear(833,214), el: document.getElementById('stHome'), block: document.getElementById('fb0'), card:null, conns:[] },
+    { t: tNear(1188,398), el: document.getElementById('stPdp'),  block: document.getElementById('fb1'), card:0, conns:[] },
+    { t: tNear(827,562), el: document.getElementById('stCk'),   block: document.getElementById('fb2'), card:1, fix:true, conns:[] }
+  ];
+
+  var TILES = [
+    { thumb: document.getElementById('thumb0'), y0: 22, span: 70, t0: tNear(816,130), t1: tNear(950,300) },
+    { thumb: document.getElementById('thumb1'), y0: 22, span: 80, t0: tNear(1150,360), t1: tNear(1175,470) },
+    { thumb: document.getElementById('thumb2'), y0: 22, span: 70, t0: tNear(872,540), t1: tNear(827,562) }
+  ];
+
+  var DWELL = .07;
+  var SEGS = (function(){
+    var ts = STATIONS.map(function(s){ return s.t; });
+    var walkShare = 1 - DWELL * ts.length;
+    var spans = [ts[0], ts[1]-ts[0], ts[2]-ts[1], 1-ts[2]];
+    var segs = [], u = 0, t = 0;
+    for(var i = 0; i < spans.length; i++){
+      var du = spans[i] * walkShare;
+      segs.push({u0:u, u1:u+du, t0:t, t1:t+spans[i]});
+      u += du; t += spans[i];
+      if(i < ts.length){ segs.push({u0:u, u1:u+DWELL, t0:t, t1:t}); u += DWELL; }
+    }
+    return segs;
+  })();
+  function tOfU(u){
+    for(var i = 0; i < SEGS.length; i++){
+      var s = SEGS[i];
+      if(u <= s.u1) return s.u1 === s.u0 ? s.t0 : s.t0 + (s.t1 - s.t0) * (u - s.u0) / (s.u1 - s.u0);
+    }
+    return 1;
+  }
+  var uBounce = SEGS[3].u1; // end of the size-guide dwell
+
+  function fireStation(st){
+    var now = performance.now();
+    if(now - (st.lastFire || 0) < 1500) return;
+    st.lastFire = now;
+    st.el.classList.add('hot');
+    st.block.classList.add('hot');
+    st.conns.forEach(function(c){ c.classList.add('hot'); });
+    setTimeout(function(){
+      st.el.classList.remove('hot');
+      st.block.classList.remove('hot');
+      st.conns.forEach(function(c){ c.classList.remove('hot'); });
+    }, 1000);
+    if(st.card !== null && cards[st.card]){
+      var c = cards[st.card];
+      c.classList.add('ping');
+      setTimeout(function(){ c.classList.remove('ping'); }, 1100);
+    }
+    if(st.fix && cards[2]){
+      setTimeout(function(){
+        cards[2].classList.add('ping');
+        setTimeout(function(){ cards[2].classList.remove('ping'); }, 1100);
+      }, 700);
+    }
+  }
+
+  var travelers = [0,1,2].map(function(i){
+    return { el: document.getElementById('trav' + i), off: i / 3, prev: i / 3, bounce: i === 1 };
+  });
+
+  if(reduced) return;
+
+  var pdpRing = { x:1188, y:398 };
+  // branch shoppers: Homepage → Collections, then Collections → Product Page
+  var branchHC = document.getElementById('branchHC');
+  var branchCP = document.getElementById('branchCP');
+  var branchers = [
+    { el: document.getElementById('trav3'), path: branchHC, L: branchHC.getTotalLength(), off: 0 },
+    { el: document.getElementById('trav4'), path: branchCP, L: branchCP.getTotalLength(), off: .3 }
+  ];
+  var LOOP = 18000, vt = 0, last = performance.now();
+  function tick(){
+    var now = performance.now();
+    vt += Math.min(now - last, 100); // clamp background-tab gaps: no crossing replay on return
+    last = now;
+    var base = (vt % LOOP) / LOOP;
+    travelers.forEach(function(tr){
+      var u = (base + tr.off) % 1;
+      var t = tOfU(u);
+      var fade = Math.min(1, u / .04, (1 - u) / .03);
+      if(tr.bounce && u >= uBounce){
+        var bp = (u - uBounce) / .1;
+        if(bp <= 1){
+          tr.el.setAttribute('transform','translate(' + (pdpRing.x + 70 * bp) + ',' + (pdpRing.y - 46 * bp) + ') scale(' + (1.25 - .3 * bp) + ')');
+          tr.el.setAttribute('opacity', Math.max(0, 1 - bp));
+        } else {
+          tr.el.setAttribute('opacity', 0);
+        }
+        tr.prev = t;
+        return;
+      }
+      var pt = path.getPointAtLength(t * L);
+      var scale = .55 + .95 * t; // small on the horizon, life-size up close
+      tr.el.setAttribute('transform','translate(' + pt.x + ',' + pt.y + ') scale(' + scale + ')');
+      tr.el.setAttribute('opacity', fade * (.35 + .65 * Math.min(1, t * 5)));
+      STATIONS.forEach(function(st){
+        var crossed = tr.prev <= t ? (tr.prev < st.t && st.t <= t) : (st.t > tr.prev || st.t <= t);
+        if(crossed) fireStation(st);
+      });
+      tr.prev = t;
+      TILES.forEach(function(tile){
+        if(t >= tile.t0 && t <= tile.t1){
+          var frac = (t - tile.t0) / (tile.t1 - tile.t0);
+          tile.thumb.setAttribute('y', tile.y0 + frac * tile.span);
+        }
+      });
+    });
+    // branch shoppers walk Collections → Product and loop
+    branchers.forEach(function(br){
+      var bu = (base * 2.2 + br.off) % 1;
+      var bpt = br.path.getPointAtLength(bu * br.L);
+      var bfade = Math.min(1, bu / .12, (1 - bu) / .12);
+      br.el.setAttribute('transform', 'translate(' + bpt.x + ',' + bpt.y + ') scale(' + (0.72 + 0.12 * bu) + ')');
+      br.el.setAttribute('opacity', bfade);
+    });
+  }
+  setInterval(tick, 33);
+  window.__fire = fireStation; window.__stations = STATIONS;
+})();
+
+/* ===== page journey: the visitor walks the landing page as they scroll ===== */
+(function(){
+  var layer = document.getElementById('journey');
+  if(!layer) return;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var topLayer = document.getElementById('journeyTop');
+  var fx = document.getElementById('journeyFx');
+  var svg = document.getElementById('jsvg');
+  var tsvg = document.getElementById('jtsvg');
+  var rail = document.getElementById('jrail');
+  var msLayer = document.getElementById('jmilestones');
+  var walker = document.getElementById('jwalker');
+  var samples = [], milestones = [], modeRanges = [], wScale = 1;
+
+  function isDesktop(){ return document.documentElement.clientWidth > 1240; }
+  function active(){ return true; } /* the journey runs at EVERY width — mobile gets the vertical store walk */
+
+  // depth choreography: how the walker meets each section
+  var SECTS = [
+    { id:'s-stakes',    mode:'under',   side:-1 },  // straight down the left, then beneath the dark band
+    { id:'s-findings',  mode:'surface', side:-1 },  // watch-it-work: path stays on the left, clear of the cards
+    { id:'s-proof',     mode:'surface', side:-1 },
+    { id:'s-guide',     mode:'surface', side: 1 },
+    { id:'s-plan',      mode:'through', side: 0 },  // walks the aisle between step cards
+    { id:'s-transform', mode:'surface', side:-1 },
+    { id:'s-report',    mode:'surface', side: 1 },
+    { id:'s-pricing',   mode:'surface', side:-1 },
+    { id:'s-values',    mode:'over',    side: 0 },  // crosses on top of the values strip
+    { id:'s-faq',       mode:'surface', side: 1 }
+  ];
+
+  function seg(p0, p1, straight, mode){
+    if(mode === 'over'){ // bow sideways: reads as a bridge arching across
+      var h = p1[1] - p0[1];
+      return 'C' + (p0[0] + 30) + ',' + (p0[1] + h * .3) + ' ' + (p1[0] + 30) + ',' + (p1[1] - h * .3) + ' ' + p1[0] + ',' + p1[1];
+    }
+    if(straight || p0[0] === p1[0]) return 'L' + p1[0] + ',' + p1[1];
+    var dy = (p1[1] - p0[1]) * .72;
+    return 'C' + p0[0] + ',' + (p0[1] + dy) + ' ' + p1[0] + ',' + (p1[1] - dy) + ' ' + p1[0] + ',' + p1[1];
+  }
+
+  function build(){
+    if(!active()) return;
+    var vw = document.documentElement.clientWidth;
+    var docH = document.querySelector('footer').offsetTop;
+    layer.style.height = docH + 'px';
+    topLayer.style.height = docH + 'px';
+    [svg, tsvg].forEach(function(el){
+      el.setAttribute('viewBox', '0 0 ' + vw + ' ' + docH);
+      el.setAttribute('width', vw); el.setAttribute('height', docH);
+    });
+
+    var hero = document.querySelector('.hero');
+    var heroH = hero.offsetHeight;
+    var thin = !isDesktop(); /* mobile: a slim rail down the RIGHT edge — text is left-aligned with a ragged
+       right, so the right margin stays empty and the rail never sits behind glyphs (readability/ADA) */
+    var gutterL = thin ? 22 : Math.max(46, (vw - 1120) / 2 * .45);
+    var gutterR = thin ? vw - 16 : vw - gutterL;
+    document.getElementById('jsurf1').setAttribute('stroke-width', thin ? 14 : 26);
+    document.getElementById('jsurf2').setAttribute('stroke-width', thin ? 10 : 20);
+    document.getElementById('jsurf3').setAttribute('stroke-width', thin ? 2 : 3);
+    document.getElementById('junder').setAttribute('stroke-width', thin ? 3 : 4);
+
+    // the visitor's journey begins just below the hero's email field
+    var heroInput = document.querySelector('.copy .cap-wrap input');
+    var icr = heroInput.getBoundingClientRect();
+    var startPt = [icr.left + scrollX + 34, icr.bottom + scrollY + 52];
+    if(thin){
+      /* mobile: the story loop sits below the form and its path exits bottom-right —
+         the page rail picks up right where the scene's path leaves off */
+      var mj = document.querySelector('.mini-journey');
+      if(mj && mj.offsetHeight > 0){
+        var mr = mj.getBoundingClientRect();
+        startPt = [Math.min(mr.right + scrollX - 26, gutterR), mr.bottom + scrollY + 26];
+      } else {
+        startPt = [icr.left + scrollX + 34, icr.bottom + scrollY + 150];
+      }
+    }
+
+    var iv = [], mpts = [];
+    var cur = startPt;
+    mpts.push(startPt);
+    SECTS.forEach(function(sc, si){
+      var el = document.getElementById(sc.id);
+      var gx = sc.side > 0 ? gutterR : sc.side < 0 ? gutterL : vw / 2;
+      if(thin && sc.side !== 0) gx = gutterR; /* mobile: right-edge rail by default */
+      /* ...but card-stack sections run down the CENTRE: the opaque cards cover the path,
+         and it peeks through in every gap between cards — the walker weaves between them */
+      if(thin && (sc.id === 's-pricing' || sc.id === 's-plan')) gx = vw / 2;
+      if(sc.id === 's-plan'){ // squeeze through the aisle between step cards 1 and 2
+        var steps = el.querySelector('.steps');
+        if(steps){
+          var sr = steps.getBoundingClientRect();
+          if(sr.width > 600) gx = sr.left + scrollX + (sr.width - 52) / 3 + 13;
+        }
+      }
+      var top = el.offsetTop, h = el.offsetHeight;
+      var inset = Math.min(70, h * .25);
+      var mode = sc.mode;
+      if(thin && sc.id === 's-values'){ mode = 'under'; gx = gutterR; } /* mobile: no bridge across the values text — dip under the band */
+      var a = [gx, top + inset], b = [gx, top + h - inset];
+      /* mobile meander: swing toward the centre between sections — those spans are pure
+         section padding (inset 70 < padding 110), so the swing never sits behind text */
+      if(thin && a[1] - cur[1] > 150){
+        var swing = [150, 84, 118][si % 3]; /* deeper, varied meander between sections */
+        iv.push({ from: cur, to: [Math.max(112, gutterR - swing), (cur[1] + a[1]) / 2], mode: 'surface' });
+        iv.push({ from: [Math.max(112, gutterR - swing), (cur[1] + a[1]) / 2], to: a, mode: 'surface' });
+      } else {
+        iv.push({ from: cur, to: a, mode: 'surface' });
+      }
+      iv.push({ from: a, to: b, mode: mode, straight: true });
+      mpts.push(a);
+      cur = b;
+    });
+    var fin = document.getElementById('s-final');
+    var finInput = fin.querySelector('.cap-wrap input');
+    var ficr = finInput.getBoundingClientRect();
+    var inX = ficr.left + scrollX, inY = ficr.top + scrollY + ficr.height / 2;
+    var sideX = Math.max(40, inX - 96);
+    iv.push({ from: cur, to: [sideX, fin.offsetTop + 40], mode: 'surface' });
+    iv.push({ from: [sideX, fin.offsetTop + 40], to: [sideX, inY - 54], mode: 'surface', straight: true });
+    iv.push({ from: [sideX, inY - 54], to: [inX - 6, inY], mode: 'surface' }); // curve in, ending at the field's beginning
+    mpts.push([inX - 6, inY]);
+
+    // one invisible rail for geometry + visible copies per depth layer
+    var SVGNS = 'http://www.w3.org/2000/svg';
+    var extras = document.getElementById('jextras');
+    extras.innerHTML = '';
+    var railD = 'M' + iv[0].from[0] + ',' + iv[0].from[1];
+    var layerD = { surface: '', under: '', over: '', near: '' };
+    var pen = { surface: null, under: null, over: null, near: null };
+    iv.forEach(function(sg){
+      var piece = seg(sg.from, sg.to, sg.straight, sg.mode);
+      railD += ' ' + piece;
+      var key = sg.mode === 'through' ? 'surface' : sg.mode;
+      /* mobile perspective: segments that swing toward the centre read as "nearer" —
+         they get a wider ribbon (drawn separately below) and the walker grows on them */
+      if(thin && key === 'surface' && (sg.from[0] + sg.to[0]) / 2 < vw * .72) key = 'near';
+      if(!pen[key] || pen[key][0] !== sg.from[0] || pen[key][1] !== sg.from[1]){
+        layerD[key] += ' M' + sg.from[0] + ',' + sg.from[1];
+      }
+      layerD[key] += ' ' + piece;
+      pen[key] = sg.to;
+      if(sg.mode === 'under'){ // tunnel mouths the walker descends into
+        [sg.from, sg.to].forEach(function(pt){
+          var rim = document.createElementNS(SVGNS, 'ellipse');
+          rim.setAttribute('cx', pt[0]); rim.setAttribute('cy', pt[1]);
+          rim.setAttribute('rx', thin ? 11 : 17); rim.setAttribute('ry', thin ? 6 : 9);
+          rim.setAttribute('fill', '#141B12'); rim.setAttribute('stroke', '#C9B784');
+          rim.setAttribute('stroke-width', '2.5');
+          extras.appendChild(rim);
+        });
+      }
+      if(sg.mode === 'over'){ // bridge shadow cast on the strip below
+        var sh = document.createElementNS(SVGNS, 'ellipse');
+        sh.setAttribute('cx', sg.from[0] + 24);
+        sh.setAttribute('cy', (sg.from[1] + sg.to[1]) / 2 + 8);
+        sh.setAttribute('rx', 30); sh.setAttribute('ry', 9);
+        sh.setAttribute('fill', '#0B120A'); sh.setAttribute('opacity', '.28');
+        extras.appendChild(sh);
+      }
+    });
+    rail.setAttribute('d', railD);
+    ['jsurf1','jsurf2','jsurf3'].forEach(function(id){ document.getElementById(id).setAttribute('d', layerD.surface); });
+    document.getElementById('junder').setAttribute('d', layerD.under || 'M0,0');
+    ['jover1','jover2','jover3'].forEach(function(id){ document.getElementById(id).setAttribute('d', layerD.over || 'M0,0'); });
+    if(layerD.near){ /* the wider "nearer" ribbon for centre swings (mobile) — under the tunnel rims */
+      var nearG = document.createElementNS(SVGNS, 'g');
+      [['#D9C89A', 20, 1, ''], ['#F0E3BC', 14, 1, ''], ['#FFFFFF', 2.4, .9, 'trail-dash']].forEach(function(st){
+        var p = document.createElementNS(SVGNS, 'path');
+        p.setAttribute('d', layerD.near);
+        p.setAttribute('fill', 'none'); p.setAttribute('stroke', st[0]);
+        p.setAttribute('stroke-width', st[1]); p.setAttribute('stroke-linecap', 'round');
+        p.setAttribute('opacity', st[2]); if(st[3]) p.setAttribute('class', st[3]);
+        nearG.appendChild(p);
+      });
+      extras.insertBefore(nearG, extras.firstChild);
+    }
+
+    msLayer.innerHTML = '';
+    milestones = mpts.map(function(p){
+      var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('class', 'jms');
+      c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', thin ? 4.5 : 7);
+      msLayer.appendChild(c);
+      return { y: p[1], el: c };
+    });
+
+    // note 4: a thin dotted thread from the hero's checkout friction to the Finding card
+    (function(){
+      var stck = document.getElementById('stCk');
+      var findingCard = document.querySelectorAll('#coverflow .cf-card')[1];
+      var g = document.getElementById('heroFindLink');
+      if(!stck || !findingCard || !g) return;
+      var a = stck.getBoundingClientRect(), b = findingCard.getBoundingClientRect();
+      var x1 = a.left + scrollX + a.width / 2, y1 = a.top + scrollY + a.height / 2;
+      var x2 = b.left + scrollX + b.width / 2, y2 = b.top + scrollY + 14;
+      var midY = (y1 + y2) / 2;
+      g.querySelector('path').setAttribute('d', 'M' + x1 + ',' + y1 + ' C' + x1 + ',' + midY + ' ' + x2 + ',' + (midY) + ' ' + x2 + ',' + y2);
+      g.querySelector('.n1').setAttribute('transform', 'translate(' + x1 + ',' + y1 + ')');
+      g.querySelector('.n2').setAttribute('transform', 'translate(' + x2 + ',' + y2 + ')');
+    })();
+
+    var L = rail.getTotalLength();
+    samples = [];
+    for(var i = 0; i <= 700; i++) samples.push(rail.getPointAtLength(L * i / 700));
+    function tAt(p){
+      var best = 0, bd = Infinity;
+      for(var k = 0; k < samples.length; k++){
+        var d = (samples[k].x - p[0]) * (samples[k].x - p[0]) + (samples[k].y - p[1]) * (samples[k].y - p[1]);
+        if(d < bd){ bd = d; best = k; }
+      }
+      return best / 700;
+    }
+    modeRanges = [];
+    iv.forEach(function(sg){
+      if(sg.mode === 'under' || sg.mode === 'over'){
+        modeRanges.push({ t0: tAt(sg.from), t1: tAt(sg.to), mode: sg.mode });
+      }
+    });
+    update();
+  }
+
+  function update(){
+    if(!active() || !samples.length) return;
+    var targetY = scrollY + innerHeight * .55;
+    // while the Watch-it-work section is pinned, glide the walker slowly down the
+    // viewport with the scrub (instead of holding at 55%, which reads as walking in place)
+    var fs = document.getElementById('s-findings');
+    if(fs){
+      var fTop = fs.offsetTop, fDist = fs.offsetHeight - innerHeight;
+      if(fDist > 0 && scrollY >= fTop && scrollY <= fTop + fDist){
+        var fp = (scrollY - fTop) / fDist;
+        // glide starts and ends at 0.55 (matching just outside the section) so there's no
+        // jump at either boundary; it dips lower mid-scrub so the walker still visibly moves
+        targetY = scrollY + innerHeight * (0.55 + 0.20 * Math.sin(fp * Math.PI));
+      }
+    }
+    // ensure the visitor actually reaches the end of the path at the very bottom
+    // (large finite value so the nearest-sample search lands on the last point, not NaN/0)
+    if(scrollY + innerHeight >= document.documentElement.scrollHeight - 30) targetY = 9e6;
+    var best = 0, bd = Infinity;
+    for(var i = 0; i < samples.length; i++){
+      var dy = Math.abs(samples[i].y - targetY);
+      if(dy < bd){ bd = dy; best = i; }
+    }
+    var p = samples[best], t = best / 700;
+    var under = false, over = false;
+    modeRanges.forEach(function(r){
+      if(t >= r.t0 - .002 && t <= r.t1 + .002){ if(r.mode === 'under') under = true; else over = true; }
+    });
+    wTargetScale = (under ? .78 : over ? 1.18 : 1);
+    if(!isDesktop()){
+      /* mobile perspective: nearer (centre swings) = bigger, farther (edge rail) = smaller */
+      var persp = 1.34 - .66 * (p.x / innerWidth);
+      wTargetScale *= .66 * Math.max(.72, Math.min(1.06, persp));
+    }
+    wTarget = p; /* the rAF loop below eases toward this — scroll events only steer */
+    if(wx === null){ /* first placement is direct — never invisible while rAF is throttled */
+      wx = p.x; wy = p.y; wScale = wTargetScale;
+      walker.style.transform = 'translate(' + (wx - 30) + 'px,' + (wy - 68) + 'px) scale(' + wScale.toFixed(3) + ')';
+      walker.style.visibility = 'visible';
+    }
+    walker.classList.toggle('j-under', under);
+    walker.classList.toggle('j-over', over);
+    milestones.forEach(function(m){ m.el.classList.toggle('lit', p.y >= m.y - 30); });
+    // arrival nod at the very bottom of the page
+    walker.classList.toggle('arrived', scrollY + innerHeight >= document.documentElement.scrollHeight - 30);
+    // shopping bag fills as the visitor passes store sections
+    var lit = 0; milestones.forEach(function(m){ if(m.el.classList.contains('lit')) lit++; });
+    var bags = milestones.length ? Math.min(3, Math.ceil(lit * 3 / milestones.length)) : 0;
+    walker.classList.remove('bag1', 'bag2', 'bag3');
+    if(bags >= 1) walker.classList.add('bag' + bags);
+  }
+
+  /* the walker's motor: a persistent rAF loop eases position toward the scroll target.
+     Mobile momentum-scrolling delivers scroll events sparsely — positioning per event made
+     the walker stutter during the pinned scrub; easing per frame keeps the walk continuous. */
+  var wTarget = null, wTargetScale = 1, wx = null, wy = null;
+  function walkerMotor(){
+    if(wTarget){
+      if(wx === null){ wx = wTarget.x; wy = wTarget.y; }
+      wx += (wTarget.x - wx) * .16;
+      wy += (wTarget.y - wy) * .16;
+      wScale += (wTargetScale - wScale) * .14;
+      walker.style.transform = 'translate(' + (wx - 30) + 'px,' + (wy - 68) + 'px) scale(' + wScale.toFixed(3) + ')';
+      walker.style.visibility = 'visible';
+    }
+    requestAnimationFrame(walkerMotor);
+  }
+  if(!reduced) requestAnimationFrame(walkerMotor);
+
+  /* journey bar (mobile): scroll progress = distance walked across the screen */
+  var bar = document.getElementById('jbar');
+  var barSvg = document.getElementById('jbarsvg');
+  var barMarks = [];
+  function buildBar(){
+    if(active()) return;
+    var bw = innerWidth, bh = 58;
+    var sh = document.documentElement.scrollHeight - innerHeight;
+    barSvg.setAttribute('viewBox', '0 0 ' + bw + ' ' + bh);
+    barSvg.setAttribute('width', bw); barSvg.setAttribute('height', bh);
+    var NS = 'http://www.w3.org/2000/svg';
+    barSvg.innerHTML = '';
+    [['#D9C89A', 7], ['#F0E3BC', 5]].forEach(function(st){
+      var ln = document.createElementNS(NS, 'line');
+      ln.setAttribute('x1', 14); ln.setAttribute('y1', 40);
+      ln.setAttribute('x2', bw - 14); ln.setAttribute('y2', 40);
+      ln.setAttribute('stroke', st[0]); ln.setAttribute('stroke-width', st[1]);
+      ln.setAttribute('stroke-linecap', 'round');
+      barSvg.appendChild(ln);
+    });
+    barMarks = [];
+    SECTS.concat([{ id: 's-final' }]).forEach(function(sc){
+      var el = document.getElementById(sc.id);
+      if(!el || sh <= 0) return;
+      var f = Math.min(1, Math.max(0, (el.offsetTop + el.offsetHeight / 2 - innerHeight / 2) / sh));
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('class', 'jms');
+      c.setAttribute('cx', 14 + f * (bw - 28)); c.setAttribute('cy', 40);
+      c.setAttribute('r', sc.id === 's-final' ? 5 : 3.5);
+      barSvg.appendChild(c);
+      barMarks.push({ f: f, el: c });
+    });
+  }
+  function mobileUpdate(){
+    if(active()) return;
+    var sh = document.documentElement.scrollHeight - innerHeight;
+    var pr = sh > 0 ? Math.min(1, Math.max(0, scrollY / sh)) : 0;
+    walker.style.left = (14 + pr * (innerWidth - 28) - 17) + 'px';
+    walker.style.visibility = 'visible';
+    barMarks.forEach(function(m){ m.el.classList.toggle('lit', pr >= m.f - .01); });
+  }
+
+  var idleTimer, deepIdle, lastSY = scrollY, lastST = performance.now();
+  function onScroll(){
+    var now = performance.now(), dy = scrollY - lastSY, dt = now - lastST;
+    if(scrollY > (window.__maxScrollY || 0)) window.__maxScrollY = scrollY;
+    walker.classList.toggle('jog', dt > 0 && Math.abs(dy) / dt > 2.2);  // fast scroll → jog
+    lastSY = scrollY; lastST = now;
+    if(active()) update(); else mobileUpdate();
+    walker.classList.add('walking');
+    walker.classList.remove('idle');
+    bar.classList.add('live');
+    clearTimeout(idleTimer); clearTimeout(deepIdle);
+    idleTimer = setTimeout(function(){
+      walker.classList.remove('walking', 'jog');
+      bar.classList.remove('live');
+    }, 260);
+    deepIdle = setTimeout(function(){ walker.classList.add('idle'); }, 6000);  // lingering → checks the watch
+  }
+  build(); buildBar(); mobileUpdate();
+  addEventListener('load', function(){ build(); buildBar(); mobileUpdate(); });
+  var rz;
+  addEventListener('resize', function(){ clearTimeout(rz); rz = setTimeout(function(){ build(); buildBar(); if(!active()) mobileUpdate(); }, 200); });
+
+  /* self-heal: the page's height changes when an FAQ opens, a section reveals, or fonts
+     settle — any of which strands the sand path short of the final form. Watching the
+     footer's position and rebuilding when it moves catches every cause (a bare offsetTop
+     read is cheap; build() only runs on an actual change). */
+  var lastDocH = document.querySelector('footer').offsetTop;
+  function rebuild(){ lastDocH = document.querySelector('footer').offsetTop; build(); buildBar(); if(!active()) mobileUpdate(); }
+  function checkRail(){ if(Math.abs(document.querySelector('footer').offsetTop - lastDocH) > 2) rebuild(); }
+  // opening/closing an FAQ is the change a visitor triggers directly — rebuild synchronously
+  // on the toggle (getBoundingClientRect inside build() flushes the new layout), so the path
+  // never lags a frame behind the reflow.
+  document.querySelectorAll('#s-faq details').forEach(function(d){ d.addEventListener('toggle', rebuild); });
+  // safety net for any other height change (a section revealing, fonts settling)
+  setInterval(checkRail, 450);
+  window.__rebuild = rebuild;
+
+  if(!reduced){
+    addEventListener('scroll', onScroll, {passive: true});
+    var lastY = scrollY;
+    setInterval(function(){ if(scrollY !== lastY){ lastY = scrollY; onScroll(); } }, 120);
+  }
+  window.__jupdate = update;
+  window.__jdebug = function(){ return { ranges: modeRanges, n: samples.length }; };
+
+  /* ===== live demo layer: the page watches its own visitor ===== */
+  (function(){
+    if(reduced) return;
+    var t0 = performance.now(), log = [], viewed = {}, hesitated = {}, timeOn = {};
+    var NAMES = { hero: 'the hero', 's-stakes': 'the stakes', 's-findings': 'the findings',
+      's-proof': 'the proof', 's-guide': 'the guide', 's-plan': 'the plan',
+      's-transform': 'the transformation', 's-report': 'the floor report', 's-pricing': 'pricing',
+      's-values': 'the values', 's-faq': 'the questions', 's-final': 'the final call' };
+
+    function stamp(){
+      var s = Math.floor((performance.now() - t0) / 1000);
+      return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2);
+    }
+    var sess = document.createElement('div');
+    sess.className = 'sess';
+    document.body.appendChild(sess);
+    function renderSess(){
+      sess.innerHTML = '<h5><span class="rec"></span>Your session — watched live</h5><ul>' +
+        log.slice(-8).map(function(e){ return '<li><b>' + e.at + '</b><span>' + e.ic + ' ' + e.label + '</span></li>'; }).join('') +
+        '</ul><div class="foot">this demo runs in your browser · nothing is sent anywhere</div>';
+    }
+    var liveLog = document.getElementById('cfLiveLog');
+    function renderLive(){
+      if(!liveLog) return;
+      liveLog.innerHTML = log.slice(-5).map(function(e){
+        return '<li><b>' + e.at + '</b><span>' + e.ic + ' ' + e.label + '</span></li>';
+      }).join('');
+    }
+    function walkerPos(){
+      var m = /translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(walker.style.transform || '');
+      return m ? { x: +m[1] + 30, y: +m[2] + 6 } : { x: innerWidth / 2, y: scrollY + innerHeight / 2 };
+    }
+    function toast(ic, label){
+      var d = document.createElement('div');
+      d.innerHTML = '<span class="ic">' + ic + '</span>' + label;
+      d.className = 'demo-toast';
+      var p = walkerPos();
+      fx.appendChild(d);
+      // clamp horizontally: on mobile the walker hugs the left rail, so an unclamped
+      // -50% translate would push half the pill off-screen
+      var tw = d.offsetWidth || 200;
+      var x = Math.max(tw / 2 + 8, Math.min(innerWidth - tw / 2 - 8, p.x));
+      d.style.left = x + 'px';
+      d.style.top = p.y + 'px';
+      setTimeout(function(){ d.remove(); }, 3100);
+    }
+    var revealedOnce = false;
+    function addEvent(ic, label, show){
+      log.push({ at: stamp(), ic: ic, label: label, y: scrollY });
+      if(log.length > 40) log.shift();
+      if(sess.classList.contains('on')) renderSess();
+      renderLive();
+      if(show){
+        toast(ic, label);
+        if(!revealedOnce){ // show the log once so visitors learn it exists
+          revealedOnce = true;
+          setTimeout(function(){
+            openSess();
+            setTimeout(function(){ if(!pinned) sess.classList.remove('on'); }, 4200);
+          }, 900);
+        }
+      }
+    }
+    window.__demoLog = log;
+    window.__demoToast = toast; // the replay uses this to re-surface events without re-logging them
+
+    var pinned = false;
+    function openSess(){
+      if(isDesktop()){
+        var p = walkerPos();
+        sess.style.left = (p.x < innerWidth / 2 ? p.x + 48 : p.x - 312) + 'px';
+        sess.style.top = (p.y - 130) + 'px';
+      } else {
+        sess.style.left = ''; sess.style.top = ''; // mobile sheet position comes from CSS
+      }
+      renderSess();
+      sess.classList.add('on');
+    }
+    walker.addEventListener('mouseenter', function(){ if(isDesktop()) openSess(); });
+    walker.addEventListener('mouseleave', function(){ if(!pinned) sess.classList.remove('on'); });
+    walker.addEventListener('click', function(e){
+      e.stopPropagation();
+      pinned = !sess.classList.contains('on') || !pinned;
+      if(sess.classList.contains('on') && !pinned) sess.classList.remove('on');
+      else openSess();
+    });
+    document.addEventListener('click', function(e){
+      if(!e.target.closest('.sess,#jwalker')){ pinned = false; sess.classList.remove('on'); }
+    });
+
+    addEvent('▶', 'session started', false);
+
+    function sectionAtCenter(){
+      var y = scrollY + innerHeight / 2;
+      var ids = Object.keys(NAMES);
+      for(var i = 1; i < ids.length; i++){
+        var el = document.getElementById(ids[i]);
+        if(el && y >= el.offsetTop && y < el.offsetTop + el.offsetHeight) return ids[i];
+      }
+      return y < document.querySelector('.hero').offsetHeight ? 'hero' : null;
+    }
+    // dwell reads as what it is: reading, studying, comparing — hesitation only at the signup
+    var DWELLS = {
+      's-stakes':    { t: 6,  ic: '👀', m: 'took in the numbers',            toast: false },
+      's-findings':  { t: 7,  ic: '🗂️', m: 'browsing the findings',           toast: false },
+      's-faq':       { t: 8,  ic: '❓', m: 'reading the questions',           toast: false },
+      's-proof':     { t: 6,  ic: '🔍', m: 'read the replay line twice',     toast: false },
+      's-guide':     { t: 8,  ic: '📖', m: 'reading the guide',              toast: false },
+      's-plan':      { t: 8,  ic: '🧭', m: 'walking through the plan',       toast: false },
+      's-transform': { t: 6,  ic: '📖', m: 'reading — guessing to knowing',  toast: false },
+      's-report':    { t: 10, ic: '📄', m: 'studying the floor report 10s',  toast: true },
+      's-pricing':   { t: 12, ic: '⚖️', m: 'comparing tiers 12s',            toast: true },
+      's-values':    { t: 5,  ic: '🤝', m: 'checked the values',             toast: false },
+      's-final':     { t: 8,  ic: '⏸', m: 'hesitation 8s · at the signup',  toast: true }
+    };
+    var lastSec = null, leftOnce = {};
+    setInterval(function(){
+      if(window.__replaying) return; // the replay drives scroll itself — don't log or re-fire during it
+      // bottom check first: at the true end of the page the centre line sits in the footer,
+      // which isn't a named section — the early return below would skip the trigger
+      if(window.__fireDebrief && scrollY + innerHeight >= document.documentElement.scrollHeight - 80) __fireDebrief();
+      var id = sectionAtCenter();
+      if(!id) return;
+      if(id !== lastSec){
+        if(leftOnce[id]) sig.revisits[id] = (sig.revisits[id] || 0) + 1; // came back — comparing, or hunting
+        if(lastSec) leftOnce[lastSec] = true;
+        lastSec = id;
+      }
+      if(!viewed[id]){
+        viewed[id] = true;
+        // the visitor arrives at the signup eager to get on the list
+        if(id === 's-final'){ addEvent('🙌', 'eager to join the waitlist', true); if(window.__fireDebrief) __fireDebrief(); }
+        else if(id !== 'hero') addEvent('👀', 'viewed ' + NAMES[id], false);
+      }
+      timeOn[id] = (timeOn[id] || 0) + 1;
+      var dw = DWELLS[id];
+      if(dw && timeOn[id] === dw.t && !hesitated[id]){
+        hesitated[id] = true;
+        addEvent(dw.ic, dw.m, dw.toast);
+      }
+    }, 1000);
+
+    /* signal taxonomy state — polarity lives in the combination, not the raw event */
+    var sig = { deadBySec: {}, deadTotal: 0, rage: 0, faqOpens: 0, faqFirst: '', faqTimes: [],
+                walkerEngaged: false, capAbandon: false, revisits: {}, oaClicked: false,
+                capTyped: false, selected: false };
+    window.__demoSig = sig;
+
+    var lastDead = 0;
+    document.addEventListener('click', function(e){
+      if(window.__replaying) return;
+      if(e.target.closest('a,button,input,select,textarea,label,form,summary,details,.sess,#jwalker,.debrief,.db-overlay')) return;
+      // highlighting copy is close reading, not a dead click
+      if(window.getSelection && String(window.getSelection()).length){
+        if(!sig.selected){ sig.selected = true; addEvent('✍️', 'highlighted the copy — close reading', false); }
+        return;
+      }
+      var now = performance.now();
+      if(now - lastDead < 800) return;
+      if(now - lastDead < 2600) sig.rage++; // rapid repeats read as frustration, not curiosity
+      lastDead = now;
+      var ping = document.createElement('div');
+      ping.className = 'dead-ping';
+      ping.textContent = '✕';
+      ping.style.left = e.clientX + 'px';
+      ping.style.top = e.clientY + 'px';
+      document.body.appendChild(ping);
+      setTimeout(function(){ ping.remove(); }, 1200);
+      var id = sectionAtCenter() || 'hero';
+      sig.deadTotal++; sig.deadBySec[id] = (sig.deadBySec[id] || 0) + 1;
+      addEvent('✕', 'dead click · ' + (NAMES[id] || 'the page'), true);
+    });
+
+    // opening an FAQ is a real interaction — surface it as its own event
+    document.querySelectorAll('#s-faq details').forEach(function(d){
+      d.addEventListener('toggle', function(){
+        if(d.open){
+          sig.faqOpens++; sig.faqTimes.push(performance.now());
+          if(!sig.faqFirst){ var s = d.querySelector('summary'); sig.faqFirst = s ? s.textContent.trim() : ''; }
+          addEvent('📖', 'opening FAQ', true);
+        }
+      });
+    });
+
+    // stepped away and came back — the manager noticed
+    var awayAt = 0;
+    document.addEventListener('visibilitychange', function(){
+      if(document.hidden){ awayAt = performance.now(); }
+      else if(awayAt){
+        var away = Math.round((performance.now() - awayAt) / 1000);
+        if(away >= 5){
+          var mm = Math.floor(away / 60), ss = ('0' + (away % 60)).slice(-2);
+          addEvent('⏸', 'stepped away ' + mm + ':' + ss + ' · welcome back', true);
+        }
+        awayAt = 0;
+      }
+    });
+
+    // engagement + friction signals the debrief reads later
+    walker.addEventListener('mouseenter', function(){ sig.walkerEngaged = true; });
+    walker.addEventListener('click', function(){ sig.walkerEngaged = true; });
+    document.querySelectorAll('.oa').forEach(function(b){ b.addEventListener('click', function(){ sig.oaClicked = true; }); });
+    document.querySelectorAll('[data-capture] input').forEach(function(i){
+      i.addEventListener('input', function(){
+        if(i.value.length >= 4 && !sig.capTyped){
+          sig.capTyped = true; // starting the signup is one of the strongest positive signals there is
+          addEvent('✉️', 'started the signup', false);
+        }
+      });
+      i.addEventListener('blur', function(){ if(!i.value && !sig.capTyped && !i.closest('.s3')) sig.capAbandon = true; });
+      i.addEventListener('focus', function(){ sig.capFocusedAt = performance.now(); });
+    });
+
+    window.__demoRender = renderSess;
+
+    /* ===== the manager's debrief: the walker hands over the clipboard at the door ===== */
+    (function(){
+      var armed = true; // once per page load — consumed only when the debrief actually shows
+
+      function secs(){ return Math.floor((performance.now() - t0) / 1000); }
+
+      /* biased positive on purpose: a false "you weren't into it" insults an engaged visitor,
+         a false "here's what pulled you in" costs nothing. Negative needs clean evidence AND zero positive. */
+      function branch(){
+        var pos = 0, neg = 0;
+        if((timeOn['s-pricing'] || 0) >= 8) pos += 2;
+        if((timeOn['s-report'] || 0) >= 6) pos += 1;
+        if(sig.faqOpens >= 1 && sig.faqOpens <= 3) pos += 2;
+        if(sig.walkerEngaged) pos += 2;
+        if(sig.oaClicked) pos += 3;
+        if(sig.capTyped) pos += 3;
+        if(sig.selected) pos += 1;
+        if(secs() >= 75) pos += 1;
+        if(secs() < 30) neg += 2;
+        if(viewed['s-findings'] && (timeOn['s-findings'] || 0) < 6) neg += 1;
+        if(sig.faqOpens >= 4 && sig.faqTimes.length >= 4 && (sig.faqTimes[3] - sig.faqTimes[0]) < 30000) neg += 1;
+        if(sig.capAbandon) neg += 1;
+        if(sig.rage >= 1) neg += 1;
+        if(pos >= 1) return 'pos';
+        return neg >= 2 ? 'neg' : 'pos';
+      }
+
+      function topDeadSec(){
+        var best = null, n = 0;
+        Object.keys(sig.deadBySec).forEach(function(k){ if(sig.deadBySec[k] > n){ n = sig.deadBySec[k]; best = k; } });
+        return best;
+      }
+      function heldSec(){
+        var best = null, n = 3;
+        Object.keys(timeOn).forEach(function(k){ if(k !== 'hero' && k !== 's-final' && timeOn[k] > n){ n = timeOn[k]; best = k; } });
+        return best;
+      }
+
+      /* each finding: what we saw you do → what it would mean on your store */
+      function findings(){
+        var rough = [], up = [];
+        if(sig.deadTotal >= 2){
+          var ds = topDeadSec();
+          rough.push('<b>' + sig.deadTotal + ' dead clicks</b>' + (ds ? ' around ' + NAMES[ds] : '') +
+            ' — you expected something there to work. On your store, I’d pull the replay and name the element.');
+        }
+        if(sig.rage >= 1) rough.push('<b>Rapid clicking</b> in one spot — that’s frustration, not curiosity. Always flagged.');
+        if(sig.faqOpens >= 4) rough.push('<b>' + sig.faqOpens + ' questions opened fast</b> — the page didn’t answer something quickly enough.');
+        if(sig.capAbandon) rough.push('<b>You started the email field and stopped</b> — capture friction. I’d test a shorter ask.');
+
+        if((timeOn['s-pricing'] || 0) >= 8){
+          up.push('<b>' + timeOn['s-pricing'] + 's comparing tiers</b>' + (sig.revisits['s-pricing'] ? ', and you came back' : '') +
+            ' — consideration, not confusion. I’d tell you which page stalls your buyers the same way.');
+        }
+        if(sig.faqOpens >= 1 && sig.faqOpens <= 3){
+          up.push('<b>You checked ' + (sig.faqFirst ? '“' + sig.faqFirst + '”' : 'the FAQ') +
+            '</b> — an objection, self-served. I’d list the questions your shoppers can’t answer.');
+        }
+        if(sig.capTyped) up.push('<b>You started the signup</b> — then held off. Whatever the hesitation was, the Monday list is where it gets answered.');
+        if(sig.selected) up.push('<b>You highlighted the copy</b> — close reading. Shoppers do that on your product pages too; I’d show you where.');
+        if((timeOn['s-report'] || 0) >= 6) up.push('<b>' + timeOn['s-report'] + 's on the sample report</b> — that’s the artifact. Yours would be about your store.');
+        if(sig.walkerEngaged) up.push('<b>You opened my clipboard</b> — you get the premise. Imagine it running on 200 of your sessions.');
+
+        var amb = '';
+        var rv = Object.keys(sig.revisits).filter(function(k){ return k !== 's-pricing'; })[0];
+        if(rv) amb = 'You went back to ' + NAMES[rv] + ' — comparing, or missing an answer? On one session I can’t tell. On two hundred of yours, I can.';
+        return { rough: rough, up: up, amb: amb };
+      }
+
+      var TESTS = {
+        price:   { h: 'Lead with the $2,140 finding, not the $99 price.',
+                   hy: 'the tiers show up before the proof does.', m: 'tier clicks, next 200 sessions.' },
+        unclear: { h: 'A plainer hero: “we watch shoppers use your store and send you the fixes.”',
+                   hy: 'the metaphor landed before the meaning.', m: 'scroll depth past the hero.' },
+        fit:     { h: 'Proof by store type — findings from a store like yours, first.',
+                   hy: 'the sample report reads generic.', m: 'time on the report section.' }
+      };
+      var CHIPS = [ ['price', 'The price'], ['unclear', 'Still not sure what it does'],
+                    ['fit', 'Not sure it fits my store'], ['looking', 'Just looking'] ];
+
+      var overlay, box;
+      function close(){
+        if(overlay) overlay.classList.remove('on');
+        if(box) box.classList.remove('on');
+        setTimeout(function(){ if(overlay) overlay.remove(); if(box) box.remove(); }, 380);
+        document.removeEventListener('keydown', onKey);
+      }
+      function onKey(e){ if(e.key === 'Escape') close(); }
+
+      function findRows(f, limit){
+        var rows = [];
+        f.rough.forEach(function(t, i){
+          rows.push('<div class="db-find"><span class="pol rough">Where it got rough</span>' +
+            (i === 0 ? '<span class="chip">FIX FIRST</span>' : '') + '<p>' + t + '</p></div>');
+        });
+        f.up.forEach(function(t){
+          rows.push('<div class="db-find"><span class="pol up">What pulled you in</span><p>' + t + '</p></div>');
+        });
+        if(!rows.length){
+          rows.push('<div class="db-find"><span class="pol up">Honestly?</span><p>You moved clean — no leaks worth flagging. ' +
+            'Most stores aren’t so lucky: two hundred sessions usually tell a different story.</p></div>');
+        }
+        return rows.slice(0, limit).join('');
+      }
+
+      function show(){
+        var mobile = matchMedia('(max-width:720px)').matches;
+        var br = branch(), f = findings();
+        var replayBtn = '<button class="db-replay" type="button">↺ Replay my visit</button>';
+        overlay = document.createElement('div'); overlay.className = 'db-overlay';
+        box = document.createElement('div'); box.className = 'debrief';
+        box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+        box.setAttribute('aria-label', 'Your visit — the manager’s notes');
+
+        var avatar = '<svg viewBox="-16 -30 32 46" width="26" height="38" aria-hidden="true">' +
+          '<rect x="-8" y="-8" width="16" height="20" rx="7" fill="#fff" opacity=".9"/>' +
+          '<circle cx="0" cy="-15" r="7.5" fill="#F2C6A0"/><path d="M-7.5,-16 A7.5,7.5 0 0 1 7.5,-16 L7.5,-19.5 A7.5,6 0 0 0 -7.5,-19.5 Z" fill="#4A3626"/></svg>';
+        var head = '<div class="db-head"><span class="avatar">' + avatar + '</span><div><h4>' +
+          (br === 'pos' ? 'Your visit — the manager’s notes' : 'Before you go —') +
+          '</h4><div class="sub">watched live, in your browser · nothing sent anywhere</div></div></div>';
+
+        var left, right;
+        if(br === 'pos'){
+          left = '<div class="db-report">' + (mobile ? '<div class="db-handle"></div>' : '') + head +
+            findRows(f, mobile ? 2 : 4) +
+            (f.amb && !mobile ? '<p class="db-honest">' + f.amb + '</p>' : '') + replayBtn + '</div>';
+          right = '<div class="db-ask"><h4>Want this every Monday — about your store?</h4>' +
+            '<p class="p">Same eyes, your floor: every session watched, the leaks ranked in dollars, replays attached. Free to join the first 100.</p>' +
+            '<form novalidate><input type="email" required autocomplete="email" placeholder="you@store.com" aria-label="Email">' +
+            '<button class="btn" type="submit">Get my Monday list →</button></form>' +
+            '<div class="db-result" hidden><div class="db-done">On the clipboard. ✓</div>' +
+            '<div class="db-done-sub">Watch your inbox.</div></div></div>';
+        } else {
+          var held = heldSec();
+          left = '<div class="db-report">' + (mobile ? '<div class="db-handle"></div>' : '') + head +
+            '<div class="db-find"><span class="pol rough">Where I lost you</span><p>' +
+            (held ? '<b>' + NAMES[held] + '</b> held you ' + timeOn[held] + 's — then you moved fast. ' : 'You moved through fast. ') +
+            'No shame in it; most visits end this way. But it means I missed something.</p></div>' + replayBtn + '</div>';
+          right = '<div class="db-ask"><h4>Level with me — what’d I miss?</h4>' +
+            '<div class="db-chips">' + CHIPS.map(function(c){
+              return '<button type="button" data-k="' + c[0] + '">' + c[1] + '</button>';
+            }).join('') + '</div><div class="db-testwrap"></div></div>';
+        }
+
+        box.innerHTML = '<button class="db-x" aria-label="Close">×</button><div class="db-grid">' + left + right + '</div>';
+        document.body.appendChild(overlay); document.body.appendChild(box);
+        // timeout, not rAF: rAF stalls in throttled/background tabs and the reveal never runs
+        setTimeout(function(){ overlay.classList.add('on'); box.classList.add('on'); }, 40);
+
+        box.querySelector('.db-x').addEventListener('click', close);
+        overlay.addEventListener('click', close);
+        document.addEventListener('keydown', onKey);
+        var rb = box.querySelector('.db-replay');
+        if(rb) rb.addEventListener('click', replayVisit);
+
+        /* swipe-down dismiss on the mobile sheet */
+        var sy = null;
+        box.addEventListener('touchstart', function(e){ if(box.scrollTop <= 0) sy = e.touches[0].clientY; }, {passive: true});
+        box.addEventListener('touchmove', function(e){
+          if(sy === null) return;
+          var dy = e.touches[0].clientY - sy;
+          if(dy > 80){ sy = null; close(); }
+        }, {passive: true});
+        box.addEventListener('touchend', function(){ sy = null; });
+
+        var form = box.querySelector('form');
+        if(form){
+          form.addEventListener('submit', function(e){
+            e.preventDefault();
+            var input = form.querySelector('input');
+            if(!input.checkValidity()){ input.reportValidity(); return; }
+            if(window.__smSend) __smSend({step: 1, email: input.value, storeUrl: '', intent: 'debrief-' + br});
+            if(window.__smLead) __smLead(1);
+            form.hidden = true;
+            box.querySelector('.db-result').hidden = false;
+            addEvent('📋', 'took the Monday list', false);
+          });
+        }
+        box.querySelectorAll('.db-chips button').forEach(function(b){
+          b.addEventListener('click', function(){
+            var k = b.dataset.k;
+            if(window.__smSend) __smSend({step: 0, email: '', storeUrl: '', intent: 'exit-' + k});
+            addEvent('🧪', 'told the manager: ' + b.textContent.toLowerCase(), false);
+            var wrap = box.querySelector('.db-testwrap');
+            box.querySelector('.db-chips').remove();
+            box.querySelector('.db-ask h4').textContent = k === 'looking' ? 'Fair enough.' : 'Fair. Here’s the test I’d run on this page:';
+            if(k === 'looking'){
+              wrap.innerHTML = '<p class="p">Thanks for walking the floor. The door’s open if you ever want the Monday list.</p>' +
+                '<button class="db-quiet" type="button">Email me when it launches</button>';
+            } else {
+              var t = TESTS[k];
+              wrap.innerHTML = '<div class="db-test"><span class="tt">Test I’d run</span><h5>' + t.h + '</h5>' +
+                '<p><b>Hypothesis</b> — ' + t.hy + '</p><p><b>Measured on</b> — ' + t.m + '</p></div>' +
+                '<p class="p" style="margin-top:10px">This lands on your desk every Monday — hypothesis, variant, result. About your store.</p>' +
+                '<button class="db-quiet" type="button">Email me when it launches</button>';
+            }
+            var q = wrap.querySelector('.db-quiet');
+            if(q) q.addEventListener('click', function(){
+              q.outerHTML = '<form novalidate style="margin-top:10px;display:flex;flex-direction:column;gap:9px">' +
+                '<input type="email" required autocomplete="email" placeholder="you@store.com" aria-label="Email" style="width:100%;padding:12px 14px;border:1.5px solid var(--edge);border-radius:11px;font-size:14px;background:#fff">' +
+                '<button class="btn" type="submit">Notify me →</button></form>';
+              var nf = wrap.querySelector('form');
+              nf.addEventListener('submit', function(e){
+                e.preventDefault();
+                var i2 = nf.querySelector('input');
+                if(!i2.checkValidity()){ i2.reportValidity(); return; }
+                if(window.__smSend) __smSend({step: 1, email: i2.value, storeUrl: '', intent: 'launch-note-' + k});
+                if(window.__smLead) __smLead(1);
+                nf.outerHTML = '<div class="db-done" style="margin-top:10px">Noted. ✓</div>';
+              });
+              var i2 = wrap.querySelector('input'); if(i2) i2.focus();
+            });
+          });
+        });
+      }
+
+      /* replay: the product's session replay, performed on the visitor's own visit */
+      function replayVisit(){
+        var maxY = window.__maxScrollY || (document.documentElement.scrollHeight - innerHeight);
+        var events = (window.__demoLog || []).filter(function(e){ return typeof e.y === 'number' && e.label !== 'session started'; });
+        close();
+        window.__replaying = true;
+        var banner = document.createElement('div');
+        banner.className = 'replay-banner';
+        banner.innerHTML = '<span class="rec"></span>Replaying your visit';
+        document.body.appendChild(banner);
+        setTimeout(function(){ banner.classList.add('on'); }, 60);
+        window.scrollTo(0, 0);
+        var dur = 6000, startTs = 0, fired = {};
+        function frame(ts){
+          if(!startTs) startTs = ts;
+          var p = Math.min(1, (ts - startTs) / dur);
+          var ease = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+          var y = ease * maxY;
+          window.scrollTo(0, y);
+          events.forEach(function(e, i){ if(!fired[i] && y >= e.y){ fired[i] = true; if(window.__demoToast) window.__demoToast(e.ic, e.label); } });
+          if(p < 1){ requestAnimationFrame(frame); }
+          else {
+            window.__replaying = false;
+            banner.classList.remove('on');
+            setTimeout(function(){ banner.remove(); }, 400);
+            setTimeout(function(){ if(window.__fireDebrief) window.__fireDebrief(true); }, 700);  // hand the clipboard back
+          }
+        }
+        setTimeout(function(){ requestAnimationFrame(frame); }, 650);  // let the banner drop in first
+        // safety net: if rAF stalls (tab hidden mid-replay), never leave the demo logger frozen
+        setTimeout(function(){
+          if(window.__replaying){ window.__replaying = false; banner.classList.remove('on'); setTimeout(function(){ banner.remove(); }, 400); }
+        }, dur + 4000);
+      }
+
+      // exit-intent (desktop): cursor bolts for the tab bar → catch them with the debrief
+      if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+        document.addEventListener('mouseout', function(e){
+          if(e.clientY <= 0 && !e.relatedTarget && window.__fireDebrief) window.__fireDebrief();
+        });
+      }
+
+      window.__fireDebrief = function(force){
+        if(!armed && !force) return;
+        // never interrupt someone mid-conversion — stay armed and quiet instead of burning the shot
+        if(!force && document.querySelector('[data-capture].s2,[data-capture].s3')) return;
+        armed = false;
+        setTimeout(show, 1400); // settle: never appear during the scroll gesture itself
+      };
+      window.__debriefBranch = branch; // exposed for tuning the threshold against real sessions
+    })();
+  })();
+})();
+
+/* ===== watch-it-work coverflow: centered card grows, neighbours shrink ===== */
+(function(){
+  var track = document.getElementById('coverflow');
+  if(!track) return;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cards = Array.prototype.slice.call(track.querySelectorAll('.cf-card'));
+  var dotsWrap = document.getElementById('cfDots');
+  var prev = document.querySelector('.cf-arrow.prev');
+  var next = document.querySelector('.cf-arrow.next');
+  var current = 0, raf = 0;
+
+  var section = document.getElementById('s-findings');
+  function pinned(){ return true; }  /* pin + scroll-scrub on every width, including mobile */
+
+  cards.forEach(function(c, i){
+    var b = document.createElement('button');
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-label', 'Go to card ' + (i + 1));
+    b.addEventListener('click', function(){
+      if(pinned()){
+        var dist = section.offsetHeight - innerHeight;
+        scrollTo({ top: section.offsetTop + (i / (cards.length - 1)) * dist, behavior: reduced ? 'auto' : 'smooth' });
+      } else { scrollToCard(i); }
+    });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function render(){
+    var mid = track.scrollLeft + track.clientWidth / 2;
+    var best = 0, bd = Infinity;
+    cards.forEach(function(c, i){
+      var cc = c.offsetLeft + c.offsetWidth / 2;
+      var dist = Math.abs(cc - mid);
+      var norm = Math.min(1, dist / (c.offsetWidth * 1.15));
+      var scale = 1 - norm * 0.18;
+      var op = 1 - norm * 0.5;
+      c.style.transform = 'scale(' + scale.toFixed(3) + ')';
+      c.style.opacity = op.toFixed(3);
+      c.classList.toggle('active', norm < 0.35);
+      if(dist < bd){ bd = dist; best = i; }
+    });
+    if(best !== current){
+      current = best;
+      dots.forEach(function(d, i){ d.classList.toggle('on', i === current); });
+    }
+  }
+  function onScroll(){ if(!raf) raf = requestAnimationFrame(function(){ raf = 0; render(); }); }
+  function scrollToCard(i){
+    i = Math.max(0, Math.min(cards.length - 1, i));
+    var c = cards[i];
+    track.scrollTo({ left: c.offsetLeft + c.offsetWidth / 2 - track.clientWidth / 2, behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  track.addEventListener('scroll', onScroll, {passive: true});
+  prev.addEventListener('click', function(){ scrollToCard(current - 1); });
+  next.addEventListener('click', function(){ scrollToCard(current + 1); });
+
+  // pinned scrub: the carousel is held centred while page scroll through the section advances it,
+  // so card 1 is on screen from the moment the section arrives and the pace stays comfortable.
+  function pageScrub(){
+    if(!pinned()) return;
+    var dist = section.offsetHeight - innerHeight;
+    var p = dist > 0 ? Math.min(1, Math.max(0, (scrollY - section.offsetTop) / dist)) : 0;
+    var max = track.scrollWidth - track.clientWidth;
+    track.scrollLeft = p * max;
+    render();
+    document.querySelectorAll('.cf-arrow').forEach(function(a){ a.style.display = 'none'; });
+  }
+  addEventListener('scroll', pageScrub, {passive: true});
+  addEventListener('resize', function(){ render(); pageScrub(); });
+
+  function centerFirst(){
+    if(pinned()){ pageScrub(); return; }
+    track.scrollLeft = cards[0].offsetLeft + cards[0].offsetWidth / 2 - track.clientWidth / 2;
+    render();
+  }
+  requestAnimationFrame(centerFirst);
+  setTimeout(centerFirst, 120);
+  addEventListener('load', centerFirst);
+})();
+
+/* ===== meadow parallax: clouds and distant trees drift against the scroll ===== */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var layers = Array.prototype.slice.call(document.querySelectorAll('.plx'));
+  if(!layers.length) return;
+  var hero = document.querySelector('.hero');
+  var raf = 0;
+  function apply(){
+    raf = 0;
+    var y = scrollY;
+    if(y > hero.offsetHeight) return;            // only while the meadow is on screen
+    layers.forEach(function(el){
+      el.style.transform = 'translateY(' + (y * parseFloat(el.dataset.rate)) + 'px)';
+    });
+  }
+  addEventListener('scroll', function(){ if(!raf) raf = requestAnimationFrame(apply); }, {passive: true});
+  apply();
+})();
+</script>
