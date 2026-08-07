@@ -152,11 +152,15 @@
   .cf-you-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
   .cf-you-fig{flex:0 0 42px;transition:opacity .35s}
   .cf-you-row .cf-hint{flex-basis:100%;margin-top:4px}
-  /* the page walker VISITS this card: while hosting, the static stand-in yields its spot,
-     and the live session box exists only while the walker is in the card — it leaves with him */
+  /* the page walker VISITS this card: while hosting, the static stand-in yields its spot;
+     the session box stays put — when he leaves he takes a COPY of it with him */
   .cf-you.host .cf-you-fig{opacity:0}
-  .cf-you .cf-log{transition:opacity .45s,transform .45s}
-  .cf-you:not(.host) .cf-log{opacity:0;transform:translateX(-26px)}
+  #jwalker.transfer{opacity:0} /* fade-step: out where he stands, in where he lands */
+  .log-copy{position:absolute;z-index:5;background:#fff;border:1px solid var(--edge);border-radius:999px;
+    box-shadow:0 10px 26px rgba(34,48,31,.18);padding:7px 14px;font-size:10.5px;font-weight:700;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--green);white-space:nowrap;pointer-events:none;
+    transition:left .8s cubic-bezier(.4,.7,.3,1),top .8s cubic-bezier(.4,.7,.3,1),opacity .8s}
+  .log-copy .rec{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--alert);margin-right:7px}
   .coverflow{
     display:flex;gap:22px;overflow-x:hidden;
     padding:44px max(24px, calc(50% - min(235px, 41vw))) 20px;
@@ -2116,7 +2120,21 @@
         walker.classList.remove('j-under', 'j-over');
       }
     }
-    walker.classList.toggle('hosted', !!window.__cfHosting);
+    /* fade-step transfer on hosting changes: fade out where he stands, place at the new
+       spot, fade back in — cleaner than gliding across the card. Leaving, he takes a
+       copy of the session box with him; the card keeps the original. */
+    var hostingNow = !!window.__cfHosting;
+    if(hostingNow !== lastHosting){
+      lastHosting = hostingNow;
+      walker.classList.add('transfer');
+      if(!hostingNow) takeLogCopy({ x: p.x, y: p.y }); /* p is already the rail point he lands on */
+      setTimeout(function(){
+        wx = null; wy = null; /* forces a direct placement at the new target */
+        if(window.__jupdate) __jupdate();
+        walker.classList.remove('transfer');
+      }, 220);
+    }
+    walker.classList.toggle('hosted', hostingNow);
     wTarget = p; /* the rAF loop below eases toward this — scroll events only steer */
     if(wx === null){ /* first placement is direct — never invisible while rAF is throttled */
       wx = p.x; wy = p.y; wScale = wTargetScale;
@@ -2139,6 +2157,26 @@
      Mobile momentum-scrolling delivers scroll events sparsely — positioning per event made
      the walker stutter during the pinned scrub; easing per frame keeps the walk continuous. */
   var wTarget = null, wTargetScale = 1, wx = null, wy = null;
+  var lastHosting = false;
+  /* leaving card 01, the walker carries off a copy of the session box — the original stays */
+  function takeLogCopy(target){
+    var src = document.querySelector('.cf-you .cf-log');
+    var fxl = document.getElementById('journeyFx');
+    if(!src || !fxl) return;
+    var r = src.getBoundingClientRect();
+    var c = document.createElement('div');
+    c.className = 'log-copy';
+    c.innerHTML = '<span class="rec"></span>your session';
+    c.style.left = (r.left + scrollX) + 'px';
+    c.style.top = (r.top + scrollY) + 'px';
+    fxl.appendChild(c);
+    setTimeout(function(){ /* next frame: transition toward the walker's rail landing spot */
+      c.style.left = (target.x - 44) + 'px';
+      c.style.top = (target.y - 98) + 'px';
+      c.style.opacity = '0';
+    }, 40);
+    setTimeout(function(){ c.remove(); }, 1100);
+  }
   function walkerMotor(){
     if(wTarget){
       if(wx === null){ wx = wTarget.x; wy = wTarget.y; }
