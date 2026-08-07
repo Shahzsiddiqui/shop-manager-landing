@@ -471,7 +471,9 @@
     .coverflow{overflow-x:hidden;padding:36px max(16px, calc(50% - min(235px, 41vw))) 16px}
     .cf-card{min-height:372px}
   }
-  @media (prefers-reduced-motion:reduce){#jwalker,.sess,#jbar{display:none}}
+  /* reduced motion: the walker stays (it follows the visitor's own scroll 1:1 — no autonomous
+     motion); only the decorative animation is removed. #jbar stays retired. */
+  @media (prefers-reduced-motion:reduce){#jbar{display:none}}
 
   /* ============ SECTIONS ============ */
   .sec{padding:110px 24px}
@@ -675,6 +677,16 @@
     .connector{opacity:1}
     .rev{opacity:1;transform:none}
     .resolve i{width:86%}
+    /* killed animations would otherwise freeze these at their hidden keyframe —
+       pin them to a meaningful static state instead */
+    .demo-toast{animation:none;opacity:1;transform:translate(-50%,-100%)}
+    .demo-toast.m{transform:none}
+    .dead-ping{animation:none;opacity:.85}
+    /* hero story loop becomes a still: walker at the product tile, fix landed, revenue shown */
+    .mj2-walk{animation:none;offset-distance:59%;opacity:1}
+    .mj2-warn,.mj2-pay,.mj2-ring{animation:none;opacity:0}
+    .mj2-fixpill,.mj2-cash{animation:none;opacity:1;transform:none}
+    .mj2-check{animation:none;opacity:1;transform:scale(1)}
   }
 </style>
 
@@ -2111,15 +2123,16 @@
   function walkerMotor(){
     if(wTarget){
       if(wx === null){ wx = wTarget.x; wy = wTarget.y; }
-      wx += (wTarget.x - wx) * .16;
-      wy += (wTarget.y - wy) * .16;
-      wScale += (wTargetScale - wScale) * .14;
+      var k = reduced ? 1 : .16; /* reduced motion: snap to position, no gliding */
+      wx += (wTarget.x - wx) * k;
+      wy += (wTarget.y - wy) * k;
+      wScale += (wTargetScale - wScale) * (reduced ? 1 : .14);
       walker.style.transform = 'translate(' + (wx - 30) + 'px,' + (wy - 68) + 'px) scale(' + wScale.toFixed(3) + ')';
       walker.style.visibility = 'visible';
     }
     requestAnimationFrame(walkerMotor);
   }
-  if(!reduced) requestAnimationFrame(walkerMotor);
+  requestAnimationFrame(walkerMotor);
 
   /* journey bar (mobile): scroll progress = distance walked across the screen */
   var bar = document.getElementById('jbar');
@@ -2200,17 +2213,18 @@
   setInterval(checkRail, 450);
   window.__rebuild = rebuild;
 
-  if(!reduced){
-    addEventListener('scroll', onScroll, {passive: true});
-    var lastY = scrollY;
-    setInterval(function(){ if(scrollY !== lastY){ lastY = scrollY; onScroll(); } }, 120);
-  }
+  /* the walker follows the visitor's own scroll 1:1 — that's position, not autonomous motion,
+     so it runs under reduced-motion too (the decorative animation is stripped in CSS) */
+  addEventListener('scroll', onScroll, {passive: true});
+  var lastY = scrollY;
+  setInterval(function(){ if(scrollY !== lastY){ lastY = scrollY; onScroll(); } }, 120);
   window.__jupdate = update;
   window.__jdebug = function(){ return { ranges: modeRanges, n: samples.length }; };
 
-  /* ===== live demo layer: the page watches its own visitor ===== */
+  /* ===== live demo layer: the page watches its own visitor =====
+     runs under reduced-motion too — the log, toasts and debrief are information,
+     not decoration (CSS pins their animations to static states) */
   (function(){
-    if(reduced) return;
     var t0 = performance.now(), log = [], viewed = {}, hesitated = {}, timeOn = {};
     var NAMES = { hero: 'the hero', 's-stakes': 'the stakes', 's-findings': 'the findings',
       's-proof': 'the proof', 's-guide': 'the guide', 's-plan': 'the plan',
@@ -2674,10 +2688,14 @@
         }, dur + 4000);
       }
 
-      // exit-intent (desktop): cursor bolts for the tab bar → catch them with the debrief
+      // exit-intent (desktop): cursor bolts for the tab bar → catch them with the debrief.
+      // Armed only after real engagement — a fresh visitor mousing up to the URL bar is not
+      // an exit, and firing on it made the popup appear "immediately" on first load.
       if(matchMedia('(hover:hover) and (pointer:fine)').matches){
         document.addEventListener('mouseout', function(e){
-          if(e.clientY <= 0 && !e.relatedTarget && window.__fireDebrief) window.__fireDebrief();
+          if(e.clientY > 0 || e.relatedTarget || !window.__fireDebrief) return;
+          var engaged = (performance.now() - t0) > 15000 && (window.__maxScrollY || 0) > innerHeight * .6;
+          if(engaged) __fireDebrief();
         });
       }
 
