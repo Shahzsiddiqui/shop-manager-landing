@@ -150,8 +150,13 @@
   /* card 1: "this is you" — live session tied to the walker */
   .cf-you{border-color:rgba(63,140,70,.4);box-shadow:0 16px 38px rgba(34,48,31,.14), 0 0 0 3px rgba(150,191,72,.18), inset 0 1px 0 #fff}
   .cf-you-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
-  .cf-you-fig{flex:0 0 42px}
+  .cf-you-fig{flex:0 0 42px;transition:opacity .35s}
   .cf-you-row .cf-hint{flex-basis:100%;margin-top:4px}
+  /* the page walker VISITS this card: while hosting, the static stand-in yields its spot,
+     and the live session box exists only while the walker is in the card — it leaves with him */
+  .cf-you.host .cf-you-fig{opacity:0}
+  .cf-you .cf-log{transition:opacity .45s,transform .45s}
+  .cf-you:not(.host) .cf-log{opacity:0;transform:translateX(-26px)}
   .coverflow{
     display:flex;gap:22px;overflow-x:hidden;
     padding:44px max(24px, calc(50% - min(235px, 41vw))) 20px;
@@ -279,6 +284,7 @@
   }
   #jwalker.j-under{opacity:0}
   #jwalker.j-over{z-index:3}
+  #jwalker.hosted{z-index:3} /* stepping into card 01 — above the pinned panel */
   #jwalker .legL,#jwalker .legR,#jwalker .figure{animation-play-state:paused}
   #jwalker.walking .legL,#jwalker.walking .legR,#jwalker.walking .figure{animation-play-state:running}
   /* micro-personality: the manager reacts to how you move */
@@ -2098,6 +2104,19 @@
       var persp = 1.34 - .66 * (p.x / innerWidth);
       wTargetScale *= .66 * Math.max(.72, Math.min(1.06, persp));
     }
+    /* card 01 of Watch-it-work hosts the walker: he steps off the rail into the card,
+       taking the static figure's spot; leaving the card, he steps back onto the rail */
+    if(window.__cfHosting){
+      var slot = document.querySelector('.cf-you .cf-you-fig');
+      if(slot){
+        var sr = slot.getBoundingClientRect();
+        p = { x: sr.left + scrollX + sr.width / 2, y: sr.top + scrollY + sr.height - 4 };
+        wTargetScale = .7; /* the walker at .7 matches the 42px stand-in he replaces */
+        under = false; over = false;
+        walker.classList.remove('j-under', 'j-over');
+      }
+    }
+    walker.classList.toggle('hosted', !!window.__cfHosting);
     wTarget = p; /* the rAF loop below eases toward this — scroll events only steer */
     if(wx === null){ /* first placement is direct — never invisible while rAF is throttled */
       wx = p.x; wy = p.y; wScale = wTargetScale;
@@ -2779,6 +2798,13 @@
     track.scrollLeft = p * max;
     render();
     document.querySelectorAll('.cf-arrow').forEach(function(a){ a.style.display = 'none'; });
+    // card 01 hosts the page walker: while the scrub sits on the first card, the walker
+    // steps into the card (the journey engine reads this flag and re-targets him)
+    var raw = dist > 0 ? (scrollY - section.offsetTop) / dist : -1;
+    var hosting = raw >= -0.02 && raw < 0.16;
+    var you = document.querySelector('.cf-you');
+    if(you) you.classList.toggle('host', hosting);
+    window.__cfHosting = hosting;
   }
   addEventListener('scroll', pageScrub, {passive: true});
   addEventListener('resize', function(){ render(); pageScrub(); });
