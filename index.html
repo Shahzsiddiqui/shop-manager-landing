@@ -143,7 +143,11 @@
   /* tall section = comfortable pinned scrub speed; panel HUGS the carousel (not 100vh)
      and anchors near the top, so there's a small 36px gap above instead of a centered band */
   #s-findings{padding:0;height:260vh;position:relative}  /* height = scroll speed knob: taller = slower per card (5 cards) */
-  .findings-pin{position:sticky;top:0;z-index:2;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px;overflow:hidden}
+  /* svh, not vh: on mobile 100vh is the LARGE viewport (address bar hidden), so a 100vh pin is
+     taller than what's actually visible — centred content gets pushed below the fold, which is
+     why the cards read as "near the bottom". svh is the small (chrome-visible) viewport: always
+     fully visible, and stable while the bar shows/hides (no reflow mid-scroll). */
+  .findings-pin{position:sticky;top:0;z-index:2;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;padding:24px;overflow:hidden}
   .findings .wrap{text-align:center}
   .findings .lede{margin-top:14px;margin-left:auto;margin-right:auto}
   .coverflow-wrap{position:relative;margin-top:34px}
@@ -223,9 +227,14 @@
   .cf-spark{margin-top:14px}
 
   #s-proof{padding-top:32px}
-  .cf-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
-  .cf-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;cursor:pointer;background:rgba(34,48,31,.18);transition:background .25s,transform .25s}
-  .cf-dots button.on{background:var(--green);transform:scale(1.3)}
+  .cf-dots{display:flex;justify-content:center;gap:0;margin-top:20px}
+  /* the dot stays 8px visually, but the tappable box is 44px — the accessibility minimum.
+     Background-clip keeps the padding transparent so the row still reads as small dots. */
+  .cf-dots button{width:44px;height:44px;border:0;padding:18px;cursor:pointer;background:transparent;
+    -webkit-appearance:none;appearance:none;display:grid;place-items:center}
+  .cf-dots button::before{content:"";width:8px;height:8px;border-radius:50%;
+    background:rgba(34,48,31,.18);transition:background .25s,transform .25s}
+  .cf-dots button.on::before{background:var(--green);transform:scale(1.3)}
   .cf-arrow{
     position:absolute;top:44%;z-index:3;width:44px;height:44px;border-radius:50%;
     border:1px solid var(--edge);background:rgba(255,255,253,.95);cursor:pointer;
@@ -301,7 +310,7 @@
   @keyframes idleWatch{0%,74%,100%{transform:rotate(0)}82%,92%{transform:rotate(-58deg)}}
   @keyframes arriveNod{0%,100%{transform:translateY(0)}35%{transform:translateY(-5px)}70%{transform:translateY(0)}}
   /* shopping bag fills as the visitor passes each store section */
-  #jwalker .bi{opacity:0;transform:translateY(4px) scale(.2);transform-box:fill-box;transform-origin:center;transition:opacity .4s,transform .4s cubic-bezier(.2,1.3,.4,1)}
+  #jwalker .bi{opacity:0;transform:translateY(4px) scale(.2);transform-box:fill-box;transform-origin:center;transition:opacity .4s,transform .4s cubic-bezier(.2,.8,.3,1)}
   #jwalker.bag1 .bi1,#jwalker.bag2 .bi1,#jwalker.bag2 .bi2,#jwalker.bag3 .bi1,#jwalker.bag3 .bi2,#jwalker.bag3 .bi3{opacity:1;transform:translateY(0) scale(1)}
   .jms{fill:#EAD9A8;stroke:#C9B784;stroke-width:1.5;transition:fill .4s,stroke .4s}
   .jms.lit{fill:var(--green-bright);stroke:var(--green)}
@@ -477,9 +486,13 @@
     .mini-journey{display:block;margin:30px 0 0;max-width:460px}
     .mini-journey svg{width:100%;height:auto;display:block}
     /* fix 2+3: keep the sticky pin on mobile so the cards scrub with scroll and there's no empty gap */
-    .findings-pin{padding:20px 16px}
-    .coverflow{overflow-x:hidden;padding:36px max(16px, calc(50% - min(235px, 41vw))) 16px}
-    .cf-card{min-height:372px}
+    /* reclaim the dead bands above/below the carousel and give the space to the card itself */
+    .findings-pin{padding:16px 16px 12px}
+    .findings .lede{margin-top:10px}
+    .coverflow-wrap{margin-top:18px}
+    .coverflow{overflow-x:hidden;padding:20px max(16px, calc(50% - min(235px, 41vw))) 10px}
+    .cf-card{min-height:min(58svh, 420px)}
+    .cf-dots{margin-top:12px}
   }
   /* reduced motion: the walker stays (it follows the visitor's own scroll 1:1 — no autonomous
      motion); only the decorative animation is removed. #jbar stays retired. */
