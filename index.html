@@ -1,6 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shop Manager — coming soon</title>
+<title>Shop Manager — see what's really happening in your Shopify store</title>
+<meta name="description" content="Shop Manager watches every visit to your Shopify store, tells you what went wrong as the shopper's story, ranks the fixes in dollars and checks that each fix worked.">
+<link rel="icon" href="https://shop.sirge.io/favicon.ico">
 <style>
   :root{
     --sky:#E3F1F4;
@@ -711,7 +716,38 @@
     .mj2-fixpill,.mj2-cash{animation:none;opacity:1;transform:none}
     .mj2-check{animation:none;opacity:1;transform:scale(1)}
   }
+
+  /* ============ PORTED TO shop.sirge.io (Phase 31-01) ============ */
+  /* the walker's floating session copy can drift past the right edge on phones — clip, never scroll */
+  html,body{overflow-x:clip}
+  a.brand{color:inherit;text-decoration:none}
+  .navlinks{display:flex;align-items:center;gap:22px}
+  .navlink{color:var(--ink);font-size:15px;font-weight:600;text-decoration:none;padding:10px 2px}
+  .navlink:hover{color:var(--green)}
+  .cta-row{margin-top:30px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .cta-row .btn{padding:14px 28px;font-size:16px}
+  .final .cta-row{justify-content:center}
+  .final .micro a,.copy .micro a{color:var(--green)}
+  .chip.test{background:rgba(63,140,70,.1);border-color:rgba(63,140,70,.4);color:var(--green)}
+  .chip.watch{background:rgba(34,48,31,.05);border-color:rgba(34,48,31,.2);color:var(--ink-dim)}
+  .pricing .tiers.two{grid-template-columns:repeat(2,1fr);max-width:880px;margin-left:auto;margin-right:auto}
+  .tier .price small.from{font-size:14px;font-weight:600;color:var(--ink-dim);margin-right:4px}
+  footer .wrap{max-width:1000px;margin:0 auto}
+  @media (max-width:1240px){
+    .copy .cta-wrap{order:1}
+    .pricing .tiers.two{grid-template-columns:1fr;max-width:520px}
+  }
+  @media (max-width:640px){
+    .navlinks{gap:14px}
+    .navlinks .hide-sm{display:none}
+    .navlink{font-size:14px}
+    nav .btn{padding:10px 16px;font-size:14px}
+    .cta-row{margin-top:20px;gap:12px}
+    .cta-row .btn{width:100%;padding:13px 20px}
+  }
 </style>
+</head>
+<body data-book-call="https://cal.com/shahz">
 
 <!-- ================= 1 · NAV + 2 · HERO ================= -->
 <section class="hero">
@@ -1007,37 +1043,26 @@
     </div>
 
     <nav>
-      <div class="brand">shop <span>manager</span></div>
-      <a class="btn" href="#early-access">Get early access</a>
+      <a class="brand" href="index.html">shop <span>manager</span></a>
+      <div class="navlinks">
+        <a class="navlink hide-sm" href="#s-plan">How it works</a>
+        <a class="navlink hide-sm" href="#s-pricing">Pricing</a>
+        <a class="navlink" href="https://shop.sirge.io/login" data-login>Log in</a>
+        <a class="btn" href="https://cal.com/shahz" data-book-call>Book a call</a>
+      </div>
     </nav>
 
-    <header class="copy" id="early-access">
-      <span class="badge">Coming soon — for Shopify stores</span>
+    <header class="copy" id="top">
+      <span class="badge">For Shopify stores</span>
       <h1>See what's <em>really happening</em> in your store.</h1>
-      <p class="sub">Your website is your salesperson — and nobody's watching it work. We put eyes on your floor: every session watched, every walk-out explained, every fix ranked by what it's costing you.</p>
+      <p class="sub">Your website is your salesperson — and nobody's watching it work. We put eyes on your floor: every visit watched, every walk-out told as the shopper's story, every fix ranked by what it's costing you — and checked once you make it.</p>
 
-      <div class="cap-wrap" data-capture aria-live="polite">
-        <div class="step1">
-          <form class="cap" novalidate>
-            <label class="sr" for="em-hero">Email address</label>
-            <input id="em-hero" type="email" required autocomplete="email" placeholder="you@yourstore.com">
-            <button class="btn" type="submit">Get early access →</button>
-          </form>
-          <p class="micro">Free to join · the first 100 stores lock the founding price for life</p>
+      <div class="cta-wrap" data-cta-anchor>
+        <div class="cta-row">
+          <a class="btn" href="https://cal.com/shahz" data-book-call>Book a call →</a>
+          <a class="navlink" href="#s-plan">See how it works</a>
         </div>
-        <div class="step2">
-          <p class="okline">You're in. <b>✓</b></p>
-          <p>Want a head start? Drop your store URL and we'll send you a free walk-through of where you're likely losing sales. A human does this — not a bot.</p>
-          <form class="cap" novalidate>
-            <label class="sr" for="url-hero">Store URL</label>
-            <input id="url-hero" type="text" inputmode="url" required pattern="[^ ]+\.[^ ]+" autocomplete="url" placeholder="yourstore.com">
-            <button class="btn" type="submit">Walk my floor</button>
-          </form>
-        </div>
-        <div class="step3">
-          <p class="okline">On the clipboard. <b>✓</b></p>
-          <p>Watch your inbox.</p>
-        </div>
+        <p class="micro">A short call with the founder — we look at your store together. Already a customer? <a href="https://shop.sirge.io/login" data-login>Log in</a>.</p>
       </div>
 
       <!-- compact journey (mobile): sources → your store, watched -->
@@ -1245,7 +1270,7 @@
       <article class="cf-card" role="listitem">
         <div class="cf-num">02 · FOUND &amp; PROVEN</div>
         <h3>Product page hesitation.</h3>
-        <p class="cf-sub"><b>We find it, and prove it.</b> Where others see a bounce, we see a shopper stuck on the size guide — then confirm it's real across 212 sessions before anyone touches the page.</p>
+        <p class="cf-sub"><b>We find it, and prove it.</b> Where others see a bounce, we see a shopper stuck on the size guide — written up as her story, then confirmed across 212 visits before anyone touches the page.</p>
         <div class="cf-viz">
           <div class="thumb" style="height:120px">
             <span class="wire" style="left:10px;top:84px;width:96px;height:7px"></span>
@@ -1264,7 +1289,7 @@
       <article class="cf-card" role="listitem">
         <div class="cf-num">03 · FIX &amp; A/B TEST</div>
         <h3>We test the fix — not guess it.</h3>
-        <p class="cf-sub"><b>We design it, then test it.</b> A change that fits your brand, run head-to-head against your current page. It ships for good only if it lifts revenue.</p>
+        <p class="cf-sub"><b>We design the test with you, and run it.</b> A change that fits your brand, run head-to-head against your current page. It ships for good only if it lifts revenue.</p>
         <div class="cf-viz">
           <div class="cf-ba">
             <div class="cf-frame">
@@ -1287,7 +1312,7 @@
       <article class="cf-card" role="listitem">
         <div class="cf-num">04 · DEV &amp; DEPLOY</div>
         <h3>We ship the winner, safely.</h3>
-        <p class="cf-sub"><b>We build it.</b> The winning variant goes live in clean code — nothing bolted on, nothing that slows your store down.</p>
+        <p class="cf-sub"><b>We build it, or you do.</b> The winning variant goes live in clean code — nothing bolted on, nothing that slows your store down.</p>
         <div class="cf-viz">
           <div class="cf-code">
             <div><span class="c">// shipping-banner.liquid</span></div>
@@ -1302,7 +1327,7 @@
       <article class="cf-card" role="listitem">
         <div class="cf-num">05 · CVR &amp; REVENUE</div>
         <h3>You get the revenue back.</h3>
-        <p class="cf-sub"><b>You grow.</b> Measured in dollars, proven by the test — then on to the next leak.</p>
+        <p class="cf-sub"><b>We check it worked.</b> When your store changes, we notice and compare before and after on our own — measured in dollars, then on to the next leak.</p>
         <div class="cf-viz">
           <div class="cf-result">
             <div class="big">+$2,140<span style="font-size:16px">/mo</span></div>
@@ -1356,17 +1381,17 @@
       <div class="step rev">
         <div class="num">1</div>
         <h3>We put eyes on your floor.</h3>
-        <p>Every session is watched and mapped — every click, scroll, and hesitation, the way a real customer moves through it, not just a pageview count.</p>
+        <p>Add our snippet and every visit is recorded and mapped — every click, scroll and hesitation, the way a real shopper moves through your store. What shoppers type is masked before it leaves their browser.</p>
       </div>
       <div class="step rev">
         <div class="num">2</div>
-        <h3>We find the leaks.</h3>
-        <p>Each week you get the three moments costing you the most — ranked by lost revenue, with the replays that prove it.</p>
+        <h3>We tell you what went wrong.</h3>
+        <p>Each week: the fires to fix, the tests worth running, and what we're watching. Each one is written as the shopper's story — what she tried to do and what got in her way — ranked by lost revenue, with the replays that prove it.</p>
       </div>
       <div class="step rev">
         <div class="num">3</div>
-        <h3>Fix what matters. Measure. Repeat.</h3>
-        <p>Biggest leak first, plain-English fix, and proof it worked. That's the whole system.</p>
+        <h3>Fix it. We check it worked.</h3>
+        <p>Biggest problem first, with a plain-English fix. When you change your store, we spot the change and track the before and after for you. That's the whole system.</p>
       </div>
     </div>
   </div>
@@ -1385,38 +1410,38 @@
   <div class="wrap">
     <div class="rev">
       <h2>Five minutes a week. Ranked in dollars.</h2>
-      <p class="lede">Not another dashboard. A short report you can act on: what's leaking, what it costs, what to fix first.</p>
+      <p class="lede">Not another dashboard. One email every Monday you can act on: fires to fix, tests worth running and what we're watching — each ranked by what it costs you.</p>
     </div>
-    <figure class="report rev" aria-label="Sample Floor Report">
+    <figure class="report rev" aria-label="Sample weekly report">
       <header>
-        <span class="rt">Floor Report — Week 12</span>
+        <span class="rt">Your week — Week 12</span>
         <span class="rd">your-store.com</span>
       </header>
       <div class="finding">
         <span class="fno">01</span>
         <div>
-          <p class="ft">Mobile product page hides shipping info<span class="chip">fix first</span></p>
-          <p class="fd">212 customers searched for it and left · 3 replays attached</p>
+          <p class="ft">Shoppers on mobile look for shipping costs and can't find them<span class="chip">fire to fix</span></p>
+          <p class="fd">212 shoppers scrolled the product page looking for it, then left · 3 replays attached</p>
         </div>
         <span class="fm">≈ $2,140/mo</span>
       </div>
       <div class="finding">
         <span class="fno">02</span>
         <div>
-          <p class="ft">Hero takes 3.8s before first tap works</p>
-          <p class="fd">mobile bounce up 22% before the page even loads</p>
+          <p class="ft">Shoppers tap the home page before it's ready, and nothing happens<span class="chip test">test worth running</span></p>
+          <p class="fd">first tap waits 3.8s on mobile · a lighter hero is worth testing</p>
         </div>
         <span class="fm">≈ $980/mo</span>
       </div>
       <div class="finding">
         <span class="fno">03</span>
         <div>
-          <p class="ft">Reviews sit below the fold on your best-seller</p>
-          <p class="fd">41 customers scrolled down-up-down at the buy button</p>
+          <p class="ft">Shoppers scroll past the buy button hunting for reviews<span class="chip watch">watching</span></p>
+          <p class="fd">41 shoppers scrolled down-up-down at the buy button · we'll tell you if it grows</p>
         </div>
         <span class="fm">≈ $610/mo</span>
       </div>
-      <figcaption class="rfoot">sample report — yours will be about your store.</figcaption>
+      <figcaption class="rfoot">sample report — yours will be about your store. Fixes you make are tracked automatically.</figcaption>
     </figure>
   </div>
 </section>
@@ -1425,56 +1450,41 @@
 <section class="sec pricing" id="s-pricing">
   <div class="wrap">
     <div class="rev">
-      <h2>Three tiers. The difference is who does the work.</h2>
-      <p class="lede">Flat pricing — never a percentage of your revenue, never billed for visitors who don't convert. The first 100 stores keep the founding price forever.</p>
+      <h2>Two ways to work with us. The difference is who does the work.</h2>
+      <p class="lede">Flat monthly pricing — never a percentage of your revenue, never billed per visitor. Every plan starts with a call, so we can look at your store together first.</p>
     </div>
-    <div class="tiers">
+    <div class="tiers two">
       <div class="tier rev">
-        <h3>Manager</h3>
+        <h3>Shop Manager</h3>
         <p class="tag">We find it. You fix it.</p>
-        <p class="price">$99<small>/mo</small></p>
-        <p class="then">(then $149) — founding rate, locked for life</p>
+        <p class="price"><small class="from">from</small>$250<small>/month</small></p>
         <ul>
-          <li>Every session watched and mapped</li>
-          <li>Weekly Floor Report, ranked in dollars</li>
-          <li>Replay evidence for every finding</li>
-          <li>Clear fix instructions — you (or your dev) make the changes</li>
+          <li>Every visit recorded and mapped, with what shoppers type masked</li>
+          <li>The Monday email: fires to fix, tests worth running, what we're watching</li>
+          <li>Each problem told as the shopper's story, with the replays that prove it</li>
+          <li>Plain-English fixes — you (or your developer) make the change</li>
+          <li>Automatic fix tracking: we spot the change and measure before and after</li>
         </ul>
-        <button class="btn oa" type="button" data-intent="manager">Lock the founding rate →</button>
+        <a class="btn oa" href="https://cal.com/shahz" data-book-call>Book a call →</a>
       </div>
       <div class="tier rev">
-        <h3>Director</h3>
-        <p class="tag">We find it. We guide your hands.</p>
-        <p class="price">$349<small>/mo</small></p>
-        <p class="then">(then $499) — founding rate, locked for life</p>
+        <span class="flag">the outcome plan</span>
+        <h3>Done for you</h3>
+        <p class="tag">You read the email. We do everything else.</p>
+        <p class="price"><small class="from">from</small>$1,500<small>/month</small></p>
         <ul>
-          <li>Everything in Manager</li>
-          <li>Monthly strategy review with a human expert</li>
-          <li>Custom fix plans beyond the playbook</li>
-          <li>Limited seats</li>
+          <li>Everything in Shop Manager</li>
+          <li>Our team builds and ships the fixes on your store</li>
+          <li>A/B tests designed and run with you — the winner ships only if it lifts revenue</li>
+          <li>Monthly results review, in dollars, with a person</li>
         </ul>
-        <button class="btn oa" type="button" data-intent="director">Lock the founding rate →</button>
-      </div>
-      <div class="tier rev">
-        <span class="flag">the outcome tier</span>
-        <h3>Done-For-You</h3>
-        <p class="tag">You read a report. We do everything else.</p>
-        <p class="price">$1,500<small>/mo</small></p>
-        <p class="then">(then $2,500) — 5 founding seats only</p>
-        <ul>
-          <li>We watch, we find, our team implements the fixes</li>
-          <li>Every change measured before and after</li>
-          <li>Monthly documented results, in dollars</li>
-          <li>Less than half a typical $3K agency retainer — full coverage, not 20 hours</li>
-        </ul>
-        <button class="btn oa" type="button" data-intent="dfy" data-cfg="callUrl">Book a call to claim a seat →</button>
+        <a class="btn oa" href="https://cal.com/shahz" data-book-call>Book a call →</a>
       </div>
     </div>
     <div class="tier-cta rev">
-      <p>Not sure which tier? A $49 audit tells you how much work your store needs — and it's credited when you join.</p>
+      <p>Not sure which fits? Book a call — we'll look at your store together and tell you honestly how much work it needs.</p>
       <div class="tier-actions">
-        <button class="btn oa" type="button" data-intent="audit" data-cfg="auditUrl">Get the $49 audit →</button>
-        <button class="btn ghost oa" type="button" data-intent="call" data-cfg="callUrl">Book a call →</button>
+        <a class="btn ghost oa" href="https://cal.com/shahz" data-book-call>Book a call →</a>
       </div>
     </div>
   </div>
@@ -1489,7 +1499,7 @@
       <span class="no">fake timers</span>
       <span class="no">phantom "2 left"</span>
       <span class="no">%-of-revenue pricing</span>
-      <span class="yes">flat rate, locked for founders</span>
+      <span class="yes">flat monthly rate</span>
     </div>
     <p class="quiet">If we wouldn't let a client do it to their customers, we don't do it to you.</p>
   </div>
@@ -1502,27 +1512,27 @@
     <div class="qs rev">
       <details>
         <summary>How is this different from free session-recording tools?</summary>
-        <p>Recordings aren't the hard part — knowing what to do with them is. Nobody has time to watch hundreds of replays. We watch them for you and hand you a short list: what's costing you the most, and how to fix it, in dollars.</p>
+        <p>Recordings aren't the hard part — knowing what to do with them is. Nobody has time to watch hundreds of replays. We watch them for you and send you a short list every Monday: what's costing you the most, and how to fix it, in dollars.</p>
       </details>
       <details>
         <summary>Do I need a developer?</summary>
-        <p>No. Every finding comes with a plain-English fix. On Manager, you or your dev makes the change. On Done-For-You, our team makes it for you.</p>
+        <p>No. Every problem comes with a plain-English fix. On Shop Manager, you or your developer makes the change. On Done for you, our team makes it for you.</p>
       </details>
       <details>
         <summary>Will this slow my store down?</summary>
-        <p>Speed is one of the things we audit other stores for — we hold ourselves to the same line. If a tool costs you sales to run, it isn't worth running.</p>
+        <p>The recorder loads after your page is ready and never blocks it. Speed is one of the things we check other stores for — we hold ourselves to the same line. If a tool costs you sales to run, it isn't worth running.</p>
       </details>
       <details>
         <summary>What about my customers' privacy?</summary>
-        <p>We watch behavior, not identities — where sessions stall, where clicks die, where people leave. No personal data is sold or shared, ever.</p>
+        <p>We watch behavior, not identities — where visits stall, where clicks die, where people leave. What shoppers type is masked in their browser, checkout is never recorded, recordings are deleted after 90 days, and recording follows your store's Shopify cookie consent settings. No personal data is sold or shared, ever. More in our privacy policy and <a href="security.html">security</a> pages.</p>
       </details>
       <details>
-        <summary>What does "founding price" actually mean?</summary>
-        <p>The first 100 stores keep their rate for as long as they stay. Prices rise for everyone after — never for you.</p>
+        <summary>Can I run A/B tests myself?</summary>
+        <p>Not on your own yet. Today we design and run each test with you, and the winner ships only if it lifts revenue. Tests worth running show up in your Monday email either way.</p>
       </details>
       <details>
-        <summary>When do I get access?</summary>
-        <p>In order of signup. Everyone on the list gets the free walk-through first — that starts before launch.</p>
+        <summary>How do I get started?</summary>
+        <p>Book a call. We look at your store together, and if it's a fit, setup is a few steps: add our snippet, check your cookie consent banner, and open your staff link so your team's own visits don't count. The <a href="install.html">install guide</a> has the details.</p>
       </details>
     </div>
   </div>
@@ -1531,34 +1541,14 @@
 <!-- ================= 11 · FINAL CTA ================= -->
 <section class="sec final" id="s-final">
   <div class="wrap rev">
-    <p class="kicker">100 founding spots — going in order</p>
-    <h2 style="margin-top:14px">Be one of the first hundred stores with someone on the floor.</h2>
-    <p class="sub2">A sales manager for your store: watches every customer, catches the moment they walk out, tells you how to stop it. Early access, hands-on onboarding. No card, no commitment.</p>
+    <p class="kicker">Book a call</p>
+    <h2 style="margin-top:14px">Put someone on your store's floor.</h2>
+    <p class="sub2">A sales manager for your store: watches every shopper, catches the moment they walk out, tells you how to stop it — and checks that the fix worked.</p>
 
-    <div class="cap-wrap" data-capture aria-live="polite" style="margin-top:30px">
-      <div class="step1">
-        <p class="cap-lead" id="capLead">Grab a founding spot — enter your email to start.</p>
-        <form class="cap" novalidate>
-          <label class="sr" for="em-final">Email address</label>
-          <input id="em-final" type="email" required autocomplete="email" placeholder="you@yourstore.com">
-          <button class="btn" type="submit" id="capBtn">Continue →</button>
-        </form>
-        <p class="micro">Free to join · the first 100 stores lock the founding price for life</p>
-      </div>
-      <div class="step2">
-        <p class="okline">Got your email. <b>✓</b></p>
-        <p>Now drop your store URL so we know which floor to walk. A human reads this — not a bot.</p>
-        <form class="cap" novalidate>
-          <label class="sr" for="url-final">Store URL</label>
-          <input id="url-final" type="text" inputmode="url" required pattern="[^ ]+\.[^ ]+" autocomplete="url" placeholder="yourstore.com">
-          <button class="btn" type="submit">Finish →</button>
-        </form>
-      </div>
-      <div class="step3">
-        <p class="okline" id="capDone">On the clipboard. <b>✓</b></p>
-        <p id="capDoneSub">Watch your inbox.</p>
-      </div>
+    <div class="cta-row" data-cta-anchor style="margin-top:30px">
+      <a class="btn" href="https://cal.com/shahz" data-book-call>Book a call →</a>
     </div>
+    <p class="micro">Already a customer? <a href="https://shop.sirge.io/login" data-login>Log in</a>.</p>
 
     <p class="purpose">Every good product deserves a fair shot. Big brands have whole teams watching their funnels. Now you do too.</p>
   </div>
@@ -1567,146 +1557,22 @@
 <!-- ================= 12 · FOOTER ================= -->
 <footer>
   <div class="wrap">
-    <span>© 2026 Shop Manager (working title)</span>
-    <span>built in public</span>
-    <a href="privacy.html">Privacy</a>
+    <span>© 2026 Shop Manager by Sirge</span>
+    <a href="terms.html">Terms</a>
+    <a href="subprocessors.html">Sub-processors</a>
+    <a href="security.html">Security</a>
+    <a href="install.html">Install</a>
+    <a href="https://shop.sirge.io/login" data-login>Log in</a>
     <span>this page loads fast on purpose</span>
   </div>
 </footer>
 
 <script>
 /* ============================================================
-   DATA CAPTURE + ATTRIBUTION + PIXELS.
-   Fill in CONFIG below, deploy, and the page collects everything.
-   Backend script: google-apps-script.gs · Steps: GO-LIVE.md
-   Everything is optional — empty values just no-op (no errors).
+   No forms, no third-party pixels: the only call to action is Book a call
+   (a plain link, BOOK_CALL_URL, rendered into the page at build/run time).
    ============================================================ */
 (function(){
-  var CONFIG = {
-    endpoint:    '',   // Google Apps Script Web App URL (writes each signup to your Sheet)
-    metaPixel:   '',   // Meta Pixel ID
-    tiktokPixel: '',   // TikTok Pixel ID
-    googleTag:   '',   // GA4 / Google Ads tag, e.g. G-XXXX or AW-XXXX
-    clarity:     '',   // Microsoft Clarity project ID (free session recording)
-    cfBeacon:    '',   // Cloudflare Web Analytics token
-    auditUrl:    '',   // $49 CRO audit payment link (Stripe/Shopify/Lemon) — opens in a new tab. Empty = capture email instead.
-    callUrl:     '',   // scheduling link (Cal.com / Calendly) — opens in a new tab. Empty = capture email instead.
-    abTest:      false // flip to true to A/B the hero headline
-  };
-
-  /* ---- attribution: capture UTMs + referrer once, reuse for both steps ---- */
-  var attr = (function(){
-    try { var s = sessionStorage.getItem('sm_attr'); if(s) return JSON.parse(s); } catch(e){}
-    var q = new URLSearchParams(location.search), a = {};
-    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(k){ a[k] = q.get(k) || ''; });
-    a.referrer = document.referrer || ''; a.landing = location.pathname;
-    try { sessionStorage.setItem('sm_attr', JSON.stringify(a)); } catch(e){}
-    return a;
-  })();
-
-  /* ---- headline A/B (off by default) ---- */
-  var variant = 'A';
-  if(CONFIG.abTest){
-    try { variant = sessionStorage.getItem('sm_variant') || ''; } catch(e){}
-    if(!variant){ variant = Math.random() < 0.5 ? 'A' : 'B'; try{ sessionStorage.setItem('sm_variant', variant); }catch(e){} }
-    if(variant === 'B'){ var h1 = document.querySelector('.copy h1'); if(h1) h1.innerHTML = "See what's <em>costing</em> you. Fix it."; }
-  }
-
-  /* ---- analytics + pixels (load only if configured) ---- */
-  function inject(src, attrs){ var s=document.createElement('script'); s.async=true; s.src=src; if(attrs) Object.keys(attrs).forEach(function(k){ s.setAttribute(k, attrs[k]); }); document.head.appendChild(s); return s; }
-  if(CONFIG.cfBeacon) inject('https://static.cloudflareinsights.com/beacon.min.js', {'data-cf-beacon': JSON.stringify({token: CONFIG.cfBeacon})});
-  if(CONFIG.clarity){ (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",CONFIG.clarity); }
-  if(CONFIG.metaPixel){ !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',CONFIG.metaPixel);fbq('track','PageView'); }
-  if(CONFIG.tiktokPixel){ !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.load=function(e){var i='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=i;var o=d.createElement('script');o.async=!0;o.src=i+'?sdkid='+e+'&lib='+t;var a=d.getElementsByTagName('script')[0];a.parentNode.insertBefore(o,a)};ttq.load(CONFIG.tiktokPixel);ttq.page()}(window,document,'ttq'); }
-  if(CONFIG.googleTag){ inject('https://www.googletagmanager.com/gtag/js?id='+CONFIG.googleTag); window.dataLayer=window.dataLayer||[]; window.gtag=function(){ dataLayer.push(arguments); }; gtag('js', new Date()); gtag('config', CONFIG.googleTag); }
-
-  function lead(step){
-    if(window.fbq) fbq('track', step===2 ? 'CompleteRegistration' : 'Lead');
-    if(window.ttq) ttq.track(step===2 ? 'CompleteRegistration' : 'SubmitForm');
-    if(window.gtag) gtag('event', step===2 ? 'store_url_submit' : 'email_submit');
-  }
-  function send(payload){
-    if(!CONFIG.endpoint) return;
-    payload.variant = variant; payload.ts = new Date().toISOString();
-    Object.keys(attr).forEach(function(k){ payload[k] = attr[k]; });
-    try { fetch(CONFIG.endpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload)}); } catch(e){}
-  }
-  window.__smSend = send; window.__smLead = lead; // the manager's debrief reports through the same channel
-
-  /* ---- the two-step forms ---- */
-  document.querySelectorAll('[data-capture]').forEach(function(wrap){
-    var forms = wrap.querySelectorAll('form');
-    var email = '';
-    forms[0].addEventListener('submit', function(e){
-      e.preventDefault();
-      var input = forms[0].querySelector('input');
-      if(!input.checkValidity()){ input.reportValidity(); return; }
-      email = input.value;
-      send({step:1, email:email, storeUrl:'', intent: wrap.dataset.intent || 'early-access'}); lead(1);
-      wrap.classList.add('s2');
-      forms[1].querySelector('input').focus();
-    });
-    forms[1].addEventListener('submit', function(e){
-      e.preventDefault();
-      var input = forms[1].querySelector('input');
-      if(!input.checkValidity()){ input.reportValidity(); return; }
-      send({step:2, email:email, storeUrl:input.value, intent: wrap.dataset.intent || 'early-access'}); lead(2);
-      wrap.classList.remove('s2');
-      wrap.classList.add('s3');
-      if(window.applyDone) applyDone(wrap, wrap.dataset.intent || 'early-access');
-    });
-  });
-
-  /* ---- three-offer menu: route each choice to its destination ---- */
-  (function(){
-    var wrap = document.querySelector('#s-final [data-capture]');
-    if(!wrap) return;
-    var lead = document.getElementById('capLead'), btn = document.getElementById('capBtn');
-    var COPY = {
-      'early-access': { lead: 'Grab a founding spot — enter your email to start.', btn: 'Continue →',
-                        done: 'On the clipboard. ✓', sub: "Watch your inbox." },
-      'manager':      { lead: 'Locking your founding Manager rate ($99/mo for life) — enter your email to hold it.', btn: 'Hold my Manager rate →',
-                        done: 'Manager rate held. ✓', sub: "You're on the founding list — we'll email you the moment access opens." },
-      'director':     { lead: 'Locking your founding Director rate ($349/mo for life) — enter your email to hold a seat.', btn: 'Hold my Director seat →',
-                        done: 'Director seat held. ✓', sub: "Seats are limited — we'll email you before access opens." },
-      'dfy':          { lead: 'Done-For-You is a conversation. Leave your email and we’ll set up a call about a founding seat.', btn: 'Request a DFY call →',
-                        done: 'Request received. ✓', sub: 'We’ll email you times to talk this week — only 5 founding seats.' },
-      'audit':        { lead: 'Enter your email and store URL — we’ll send your $49 audit and get started.', btn: 'Start my audit →',
-                        done: 'Audit requested. ✓', sub: 'We’ll email your payment link and kick it off within a day.' },
-      'call':         { lead: 'Enter your email — we’ll send you a couple of times that work.', btn: 'Request a call →',
-                        done: 'Request received. ✓', sub: 'We’ll email you a couple of times to talk this week.' }
-    };
-    window.applyDone = function(root, intent){
-      var d = root.querySelector('#capDone'), ds = root.querySelector('#capDoneSub');
-      if(!d) return; // hero capture has no adaptive confirmation — leave it as-is
-      var c = COPY[intent] || COPY['early-access'];
-      d.innerHTML = c.done.replace('✓', '<b>✓</b>');
-      if(ds) ds.textContent = c.sub;
-    };
-    function choose(intent){
-      var c = COPY[intent] || COPY['early-access'];
-      wrap.dataset.intent = intent;
-      if(lead) lead.textContent = c.lead;
-      if(btn) btn.textContent = c.btn;
-      // reset to step 1 in case they'd started another path
-      wrap.classList.remove('s2','s3');
-      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      wrap.classList.remove('pulse'); void wrap.offsetWidth; wrap.classList.add('pulse');
-      setTimeout(function(){ var i = wrap.querySelector('.step1 input'); if(i) i.focus({ preventScroll: true }); }, 380);
-    }
-    document.querySelectorAll('.oa').forEach(function(b){
-      b.addEventListener('click', function(){
-        var intent = b.dataset.intent, cfg = b.dataset.cfg, url = cfg ? CONFIG[cfg] : '';
-        if(url){ // real payment / scheduling link configured → go there
-          send({step:0, email:'', storeUrl:'', intent:intent});
-          window.open(url, '_blank', 'noopener');
-          return;
-        }
-        choose(intent); // otherwise capture the lead, tagged with what they wanted
-      });
-    });
-  })();
-
   /* scroll reveals */
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
     var io = new IntersectionObserver(function(entries){
@@ -1927,10 +1793,10 @@
     document.getElementById('jsurf3').setAttribute('stroke-width', thin ? 2 : 3);
     document.getElementById('junder').setAttribute('stroke-width', thin ? 3 : 4);
 
-    // the visitor's journey begins just below the hero's email field
-    var heroInput = document.querySelector('.copy .cap-wrap input');
+    // the visitor's journey begins just below the hero's Book a call block
+    var heroInput = document.querySelector('.copy [data-cta-anchor]');
     var icr = heroInput.getBoundingClientRect();
-    var startPt = [icr.left + scrollX + 34, icr.bottom + scrollY + 52];
+    var startPt = [icr.left + scrollX + 34, icr.bottom + scrollY + 74];
     if(thin){
       /* mobile: the story loop sits below the form and its path exits bottom-right —
          the page rail picks up right where the scene's path leaves off */
@@ -1979,13 +1845,13 @@
       cur = b;
     });
     var fin = document.getElementById('s-final');
-    var finInput = fin.querySelector('.cap-wrap input');
+    var finInput = fin.querySelector('[data-cta-anchor] .btn');
     var ficr = finInput.getBoundingClientRect();
     var inX = ficr.left + scrollX, inY = ficr.top + scrollY + ficr.height / 2;
     var sideX = Math.max(40, inX - 96);
     iv.push({ from: cur, to: [sideX, fin.offsetTop + 40], mode: 'surface' });
     iv.push({ from: [sideX, fin.offsetTop + 40], to: [sideX, inY - 54], mode: 'surface', straight: true });
-    iv.push({ from: [sideX, inY - 54], to: [inX - 6, inY], mode: 'surface' }); // curve in, ending at the field's beginning
+    iv.push({ from: [sideX, inY - 54], to: [inX - 6, inY], mode: 'surface' }); // curve in, ending at the button's beginning
     mpts.push([inX - 6, inY]);
 
     // one invisible rail for geometry + visible copies per depth layer
@@ -2295,10 +2161,11 @@
      runs under reduced-motion too — the log, toasts and debrief are information,
      not decoration (CSS pins their animations to static states) */
   (function(){
+    var BOOK_CALL_URL = document.body.getAttribute('data-book-call') || '#';
     var t0 = performance.now(), log = [], viewed = {}, hesitated = {}, timeOn = {};
     var NAMES = { hero: 'the hero', 's-stakes': 'the stakes', 's-findings': 'the findings',
       's-proof': 'the proof', 's-guide': 'the guide', 's-plan': 'the plan',
-      's-transform': 'the transformation', 's-report': 'the floor report', 's-pricing': 'pricing',
+      's-transform': 'the transformation', 's-report': 'the weekly report', 's-pricing': 'pricing',
       's-values': 'the values', 's-faq': 'the questions', 's-final': 'the final call' };
 
     function stamp(){
@@ -2393,7 +2260,7 @@
       }
       return y < document.querySelector('.hero').offsetHeight ? 'hero' : null;
     }
-    // dwell reads as what it is: reading, studying, comparing — hesitation only at the signup
+    // dwell reads as what it is: reading, studying, comparing — hesitation only at the final call
     var DWELLS = {
       's-stakes':    { t: 6,  ic: '👀', m: 'took in the numbers',            toast: false },
       's-findings':  { t: 7,  ic: '🗂️', m: 'browsing the findings',           toast: false },
@@ -2402,10 +2269,10 @@
       's-guide':     { t: 8,  ic: '📖', m: 'reading the guide',              toast: false },
       's-plan':      { t: 8,  ic: '🧭', m: 'walking through the plan',       toast: false },
       's-transform': { t: 6,  ic: '📖', m: 'reading — guessing to knowing',  toast: false },
-      's-report':    { t: 10, ic: '📄', m: 'studying the floor report 10s',  toast: true },
+      's-report':    { t: 10, ic: '📄', m: 'studying the weekly report 10s', toast: true },
       's-pricing':   { t: 12, ic: '⚖️', m: 'comparing tiers 12s',            toast: true },
       's-values':    { t: 5,  ic: '🤝', m: 'checked the values',             toast: false },
-      's-final':     { t: 8,  ic: '⏸', m: 'hesitation 8s · at the signup',  toast: true }
+      's-final':     { t: 8,  ic: '⏸', m: 'hesitation 8s · at Book a call', toast: true }
     };
     var lastSec = null, leftOnce = {};
     setInterval(function(){
@@ -2422,8 +2289,8 @@
       }
       if(!viewed[id]){
         viewed[id] = true;
-        // the visitor arrives at the signup eager to get on the list
-        if(id === 's-final'){ addEvent('🙌', 'eager to join the waitlist', true); if(window.__fireDebrief) __fireDebrief(); }
+        // the visitor arrives at the final call
+        if(id === 's-final'){ addEvent('🙌', 'reached the final call', true); if(window.__fireDebrief) __fireDebrief(); }
         else if(id !== 'hero') addEvent('👀', 'viewed ' + NAMES[id], false);
       }
       timeOn[id] = (timeOn[id] || 0) + 1;
@@ -2493,17 +2360,11 @@
     // engagement + friction signals the debrief reads later
     walker.addEventListener('mouseenter', function(){ sig.walkerEngaged = true; });
     walker.addEventListener('click', function(){ sig.walkerEngaged = true; });
-    document.querySelectorAll('.oa').forEach(function(b){ b.addEventListener('click', function(){ sig.oaClicked = true; }); });
-    document.querySelectorAll('[data-capture] input').forEach(function(i){
-      i.addEventListener('input', function(){
-        if(i.value.length >= 4 && !sig.capTyped){
-          sig.capTyped = true; // starting the signup is one of the strongest positive signals there is
-          addEvent('✉️', 'started the signup', false);
-        }
-      });
-      i.addEventListener('blur', function(){ if(!i.value && !sig.capTyped && !i.closest('.s3')) sig.capAbandon = true; });
-      i.addEventListener('focus', function(){ sig.capFocusedAt = performance.now(); });
-    });
+    // reaching for Book a call is the strongest positive signal there is
+    document.querySelectorAll('[data-book-call]').forEach(function(b){ b.addEventListener('click', function(){
+      if(!sig.oaClicked) addEvent('📅', 'reached for Book a call', false);
+      sig.oaClicked = true;
+    }); });
 
     window.__demoRender = renderSess;
 
@@ -2522,13 +2383,11 @@
         if(sig.faqOpens >= 1 && sig.faqOpens <= 3) pos += 2;
         if(sig.walkerEngaged) pos += 2;
         if(sig.oaClicked) pos += 3;
-        if(sig.capTyped) pos += 3;
         if(sig.selected) pos += 1;
         if(secs() >= 75) pos += 1;
         if(secs() < 30) neg += 2;
         if(viewed['s-findings'] && (timeOn['s-findings'] || 0) < 6) neg += 1;
         if(sig.faqOpens >= 4 && sig.faqTimes.length >= 4 && (sig.faqTimes[3] - sig.faqTimes[0]) < 30000) neg += 1;
-        if(sig.capAbandon) neg += 1;
         if(sig.rage >= 1) neg += 1;
         if(pos >= 1) return 'pos';
         return neg >= 2 ? 'neg' : 'pos';
@@ -2555,7 +2414,6 @@
         }
         if(sig.rage >= 1) rough.push('<b>Rapid clicking</b> in one spot — that’s frustration, not curiosity. Always flagged.');
         if(sig.faqOpens >= 4) rough.push('<b>' + sig.faqOpens + ' questions opened fast</b> — the page didn’t answer something quickly enough.');
-        if(sig.capAbandon) rough.push('<b>You started the email field and stopped</b> — capture friction. I’d test a shorter ask.');
 
         if((timeOn['s-pricing'] || 0) >= 8){
           up.push('<b>' + timeOn['s-pricing'] + 's comparing tiers</b>' + (sig.revisits['s-pricing'] ? ', and you came back' : '') +
@@ -2565,7 +2423,7 @@
           up.push('<b>You checked ' + (sig.faqFirst ? '“' + sig.faqFirst + '”' : 'the FAQ') +
             '</b> — an objection, self-served. I’d list the questions your shoppers can’t answer.');
         }
-        if(sig.capTyped) up.push('<b>You started the signup</b> — then held off. Whatever the hesitation was, the Monday list is where it gets answered.');
+        if(sig.oaClicked) up.push('<b>You reached for Book a call</b> — that’s intent. On your store, I’d show you where shoppers reach for the buy button, then stall.');
         if(sig.selected) up.push('<b>You highlighted the copy</b> — close reading. Shoppers do that on your product pages too; I’d show you where.');
         if((timeOn['s-report'] || 0) >= 6) up.push('<b>' + timeOn['s-report'] + 's on the sample report</b> — that’s the artifact. Yours would be about your store.');
         if(sig.walkerEngaged) up.push('<b>You opened my clipboard</b> — you get the premise. Imagine it running on 200 of your sessions.');
@@ -2577,7 +2435,7 @@
       }
 
       var TESTS = {
-        price:   { h: 'Lead with the $2,140 finding, not the $99 price.',
+        price:   { h: 'Lead with the $2,140 finding, not the $250 price.',
                    hy: 'the tiers show up before the proof does.', m: 'tier clicks, next 200 sessions.' },
         unclear: { h: 'A plainer hero: “we watch shoppers use your store and send you the fixes.”',
                    hy: 'the metaphor landed before the meaning.', m: 'scroll depth past the hero.' },
@@ -2634,11 +2492,8 @@
             findRows(f, mobile ? 2 : 4) +
             (f.amb && !mobile ? '<p class="db-honest">' + f.amb + '</p>' : '') + replayBtn + '</div>';
           right = '<div class="db-ask"><h4>Want this every Monday — about your store?</h4>' +
-            '<p class="p">Same eyes, your floor: every session watched, the leaks ranked in dollars, replays attached. Free to join the first 100.</p>' +
-            '<form novalidate><input type="email" required autocomplete="email" placeholder="you@store.com" aria-label="Email">' +
-            '<button class="btn" type="submit">Get my Monday list →</button></form>' +
-            '<div class="db-result" hidden><div class="db-done">On the clipboard. ✓</div>' +
-            '<div class="db-done-sub">Watch your inbox.</div></div></div>';
+            '<p class="p">Same eyes, your floor: every visit watched, the problems ranked in dollars, replays attached, and every fix checked.</p>' +
+            '<a class="btn" href="#" data-book-call style="margin-top:14px">Book a call →</a></div>';
         } else {
           var held = heldSec();
           left = '<div class="db-report">' + (mobile ? '<div class="db-handle"></div>' : '') + head +
@@ -2672,53 +2527,32 @@
         }, {passive: true});
         box.addEventListener('touchend', function(){ sy = null; });
 
-        var form = box.querySelector('form');
-        if(form){
-          form.addEventListener('submit', function(e){
-            e.preventDefault();
-            var input = form.querySelector('input');
-            if(!input.checkValidity()){ input.reportValidity(); return; }
-            if(window.__smSend) __smSend({step: 1, email: input.value, storeUrl: '', intent: 'debrief-' + br});
-            if(window.__smLead) __smLead(1);
-            form.hidden = true;
-            box.querySelector('.db-result').hidden = false;
-            addEvent('📋', 'took the Monday list', false);
+        // Book a call links built in JS take the same URL the server rendered into <body>
+        function bookLinks(root){
+          root.querySelectorAll('a[data-book-call]').forEach(function(a){
+            a.setAttribute('href', BOOK_CALL_URL);
+            a.addEventListener('click', function(){ sig.oaClicked = true; addEvent('📅', 'reached for Book a call', false); });
           });
         }
+        bookLinks(box);
         box.querySelectorAll('.db-chips button').forEach(function(b){
           b.addEventListener('click', function(){
             var k = b.dataset.k;
-            if(window.__smSend) __smSend({step: 0, email: '', storeUrl: '', intent: 'exit-' + k});
             addEvent('🧪', 'told the manager: ' + b.textContent.toLowerCase(), false);
             var wrap = box.querySelector('.db-testwrap');
             box.querySelector('.db-chips').remove();
             box.querySelector('.db-ask h4').textContent = k === 'looking' ? 'Fair enough.' : 'Fair. Here’s the test I’d run on this page:';
             if(k === 'looking'){
-              wrap.innerHTML = '<p class="p">Thanks for walking the floor. The door’s open if you ever want the Monday list.</p>' +
-                '<button class="db-quiet" type="button">Email me when it launches</button>';
+              wrap.innerHTML = '<p class="p">Thanks for walking the floor. The door’s open if you ever want to talk.</p>' +
+                '<a class="db-quiet" href="#" data-book-call>Book a call</a>';
             } else {
               var t = TESTS[k];
               wrap.innerHTML = '<div class="db-test"><span class="tt">Test I’d run</span><h5>' + t.h + '</h5>' +
                 '<p><b>Hypothesis</b> — ' + t.hy + '</p><p><b>Measured on</b> — ' + t.m + '</p></div>' +
                 '<p class="p" style="margin-top:10px">This lands on your desk every Monday — hypothesis, variant, result. About your store.</p>' +
-                '<button class="db-quiet" type="button">Email me when it launches</button>';
+                '<a class="db-quiet" href="#" data-book-call>Book a call to see yours</a>';
             }
-            var q = wrap.querySelector('.db-quiet');
-            if(q) q.addEventListener('click', function(){
-              q.outerHTML = '<form novalidate style="margin-top:10px;display:flex;flex-direction:column;gap:9px">' +
-                '<input type="email" required autocomplete="email" placeholder="you@store.com" aria-label="Email" style="width:100%;padding:12px 14px;border:1.5px solid var(--edge);border-radius:11px;font-size:14px;background:#fff">' +
-                '<button class="btn" type="submit">Notify me →</button></form>';
-              var nf = wrap.querySelector('form');
-              nf.addEventListener('submit', function(e){
-                e.preventDefault();
-                var i2 = nf.querySelector('input');
-                if(!i2.checkValidity()){ i2.reportValidity(); return; }
-                if(window.__smSend) __smSend({step: 1, email: i2.value, storeUrl: '', intent: 'launch-note-' + k});
-                if(window.__smLead) __smLead(1);
-                nf.outerHTML = '<div class="db-done" style="margin-top:10px">Noted. ✓</div>';
-              });
-              var i2 = wrap.querySelector('input'); if(i2) i2.focus();
-            });
+            bookLinks(wrap);
           });
         });
       }
@@ -2771,8 +2605,6 @@
 
       window.__fireDebrief = function(force){
         if(!armed && !force) return;
-        // never interrupt someone mid-conversion — stay armed and quiet instead of burning the shot
-        if(!force && document.querySelector('[data-capture].s2,[data-capture].s3')) return;
         armed = false;
         setTimeout(show, 1400); // settle: never appear during the scroll gesture itself
       };
@@ -2889,3 +2721,5 @@
   apply();
 })();
 </script>
+</body>
+</html>
