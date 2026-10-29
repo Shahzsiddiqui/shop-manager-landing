@@ -3,93 +3,154 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy Policy — Shop Manager</title>
+<title>Privacy policy — Shop Manager</title>
+<meta name="description" content="What Shop Manager collects, on this website and on the stores that use it, and what we do with it.">
+<link rel="icon" href="https://shop.sirge.io/favicon.ico">
 <style>
-  :root{--page:#F8F9F1;--paper:#FFFDF6;--ink:#22301F;--ink-dim:#5F7060;--green:#3F8C46;--edge:rgba(34,48,31,.1)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--page);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:720px;margin:0 auto;padding:48px 24px 80px}
-  .brand{font-size:19px;font-weight:700}
-  .brand span{font-weight:400;color:var(--ink-dim)}
-  .brand a{color:inherit;text-decoration:none}
-  h1{margin-top:34px;font-size:32px;font-weight:800;letter-spacing:-.01em}
-  .updated{margin-top:8px;font-size:13px;color:var(--ink-dim)}
-  h2{margin-top:36px;font-size:19px;font-weight:800}
-  p,li{margin-top:12px;font-size:15.5px;color:var(--ink-dim)}
-  ul{padding-left:22px}
-  b{color:var(--ink)}
-  a{color:var(--green)}
-  .card{margin-top:28px;background:var(--paper);border:1px solid var(--edge);border-radius:14px;padding:20px 22px;font-size:14px;color:var(--ink-dim)}
-  .back{display:inline-block;margin-top:40px;font-weight:600}
+.smpub{--page:#F8F9F1;--paper:#FFFDF6;--ink:#22301F;--ink-dim:#5F7060;--cream:#F6F7EF;--green:#3F8C46;--green-bright:#96BF48;--meadow:#DCEDCB;--sky:#E3F1F4;--edge:rgba(34,48,31,.1);
+  background:var(--page);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.smpub,.smpub *{box-sizing:border-box;margin:0;padding:0}
+.smpub h1,.smpub h2,.smpub h3{color:var(--ink)}
+.smpub a{color:var(--green)}
+.smpub a:focus-visible,.smpub button:focus-visible{outline:3px solid rgba(63,140,70,.55);outline-offset:2px}
+.smpub .top{background:linear-gradient(180deg,var(--sky) 0%,#EDF4E4 70%,var(--page) 100%)}
+.smpub nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 48px;max-width:1440px;margin:0 auto}
+.smpub .brand{font-size:21px;font-weight:700;letter-spacing:.01em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.smpub .brand span{font-weight:400;color:var(--ink-dim)}
+.smpub .navlinks{display:flex;align-items:center;gap:22px}
+.smpub .navlink{color:var(--ink);font-size:15px;font-weight:600;text-decoration:none;padding:10px 2px;white-space:nowrap}
+.smpub .navlink:hover{color:var(--green)}
+.smpub .btn{display:inline-block;border:0;cursor:pointer;text-decoration:none;text-align:center;padding:12px 24px;border-radius:999px;white-space:nowrap;color:#fff;font-size:15px;font-weight:600;font-family:inherit;background:linear-gradient(180deg,#58A14E,var(--green));box-shadow:0 6px 16px rgba(63,140,70,.3),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .25s,box-shadow .25s}
+.smpub .btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(63,140,70,.38)}
+.smpub .btn.ghost{background:#fff;color:var(--green);border:1.5px solid rgba(63,140,70,.4);box-shadow:none}
+.smpub header.doc{max-width:760px;margin:0 auto;padding:36px 24px 8px}
+.smpub .eyebrow{display:inline-block;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--green);background:rgba(150,191,72,.14);border:1px solid rgba(63,140,70,.3)}
+.smpub h1{margin-top:18px;font-size:clamp(30px,4vw,42px);line-height:1.12;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+.smpub main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:8px 24px 80px}
+.smpub .updated{font-size:13px;color:var(--ink-dim)}
+.smpub .lead{margin-top:16px;font-size:17px;color:var(--ink-dim)}
+.smpub h2{margin-top:40px;font-size:21px;font-weight:800;letter-spacing:-.01em}
+.smpub h3{margin-top:24px;font-size:16.5px;font-weight:700}
+.smpub p,.smpub li{margin-top:12px;font-size:15.5px;color:var(--ink-dim);overflow-wrap:anywhere}
+.smpub ul,.smpub ol{padding-left:22px}
+.smpub b{color:var(--ink)}
+.smpub code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;background:rgba(34,48,31,.06);border-radius:5px;padding:1px 5px;color:var(--ink);overflow-wrap:anywhere}
+.smpub .card{margin-top:24px;background:var(--paper);border:1px solid var(--edge);border-radius:14px;padding:18px 20px;font-size:15px;color:var(--ink-dim);box-shadow:0 10px 26px rgba(34,48,31,.06)}
+.smpub .copy-box{margin-top:12px;background:var(--paper);border:1px dashed rgba(63,140,70,.45);border-radius:12px;padding:16px 18px;font-size:14.5px;line-height:1.6;color:var(--ink);user-select:all;overflow-wrap:anywhere}
+.smpub ol.steps{list-style:none;padding:0;counter-reset:st;margin-top:20px}
+.smpub ol.steps>li{counter-increment:st;position:relative;margin-top:22px;padding:20px 22px 20px 64px;background:var(--paper);border:1px solid var(--edge);border-radius:16px;box-shadow:0 10px 26px rgba(34,48,31,.06)}
+.smpub ol.steps>li::before{content:counter(st);position:absolute;left:20px;top:20px;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.smpub ol.steps h3{margin-top:2px}
+.smpub ol.steps p{margin-top:8px}
+.smpub .sp{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.smpub .sp-row{background:var(--paper);border:1px solid var(--edge);border-radius:14px;padding:16px 20px}
+.smpub .sp-row h3{margin-top:0}
+.smpub .sp-row .sp-what{margin-top:6px}
+.smpub .sp-row .sp-where{margin-top:6px;font-size:13px;font-weight:600;color:var(--green)}
+.smpub .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.smpub footer{background:var(--ink);color:rgba(246,247,239,.65);padding:34px 24px;font-size:13.5px}
+.smpub footer .wrap{display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:center;text-align:center;max-width:1000px;margin:0 auto}
+.smpub footer a{color:var(--cream);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:1240px){.smpub nav{padding:20px 24px}}
+@media (max-width:640px){
+  .smpub nav{padding:14px 20px}
+  .smpub .navlinks{gap:14px}
+  .smpub .navlinks .hide-sm{display:none}
+  .smpub .navlink{font-size:14px}
+  .smpub nav .btn{padding:10px 16px;font-size:14px}
+  .smpub header.doc{padding:22px 20px 4px}
+  .smpub main{padding:4px 20px 64px}
+  .smpub ol.steps>li{padding:18px 18px 18px 58px}
+  .smpub ol.steps>li::before{left:16px}
+}
+@media (prefers-reduced-motion:reduce){.smpub *{transition:none !important}.smpub .btn:hover{transform:none}}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <div class="brand"><a href="index.html">shop <span>manager</span></a></div>
+<body class="smpub">
+<div class="top"><nav>
+  <a class="brand" href="index.html">shop <span>manager</span></a>
+  <div class="navlinks">
+    <a class="navlink hide-sm" href="index.html#s-plan">How it works</a>
+    <a class="navlink hide-sm" href="index.html#s-pricing">Pricing</a>
+    <a class="navlink" href="https://shop.sirge.io/login" data-login>Log in</a>
+    <a class="btn" href="mailto:shahz@sirge.io?subject=Shop%20Manager%20call" data-book-call>Book a call</a>
+  </div>
+</nav>
+<header class="doc"><span class="eyebrow">Privacy</span><h1>Privacy policy</h1></header></div>
+<main>
+<p class="updated">Last updated: 29 October 2026</p>
+<p class="lead">Shop Manager is a service by Sirge that watches how shoppers use Shopify stores and tells the store what to fix. This policy covers two groups of people: <b>merchants and visitors to this website</b>, and <b>shoppers on the stores that use Shop Manager</b>.</p>
 
-  <h1>Privacy policy</h1>
-  <p class="updated">Last updated: August 2026 · Shop Manager is a pre-launch product (working title).</p>
+<div class="card"><b>The short version.</b> We record how pages are used, not who is using them. What shoppers type is masked in their browser, checkout is never recorded, recordings are deleted after 90 days, we follow each store's cookie consent settings, and we never sell or share personal data.</div>
 
-  <p>This page describes what we collect on this website, why, and what we do with it. The short
-  version: we collect what you type into our forms, standard analytics about how the page is used,
-  and nothing else. We don't sell your data, ever.</p>
+<h2>1. Merchants and visitors to this website</h2>
+<p>For this website and your Shop Manager account, Sirge decides how data is used (we are the <b>controller</b>).</p>
+<ul>
+  <li><b>If you book a call or email us:</b> your name, email address, your store's address and whatever you choose to tell us. We use it to reply and to set up your account.</li>
+  <li><b>Your account:</b> the email address you sign in with, the stores you manage, and sign-in records. We use it to run your account and send you the Monday email. Every email has a one-click unsubscribe.</li>
+  <li><b>Email delivery:</b> whether an email bounced or was marked as spam, so we stop sending to addresses that don't want it.</li>
+  <li><b>Cookies:</b> the app uses only the cookies it needs to keep you signed in. This website sets no advertising or analytics cookies and loads no third-party trackers. The "your session — live" demo on the home page runs entirely in your browser and sends nothing to us.</li>
+</ul>
 
-  <h2>What we collect</h2>
-  <ul>
-    <li><b>What you give us:</b> your email address and, if you choose, your store URL — when you
-    request early access, an audit, a call, or the weekly list.</li>
-    <li><b>How you found us:</b> standard campaign parameters (UTM tags), the referring site, and
-    the page you landed on.</li>
-    <li><b>How the page is used:</b> anonymous interaction signals on this page (for example
-    scroll depth, clicks, and the on-page demo events), and — if you answer it — the one-tap
-    exit question about what we missed.</li>
-  </ul>
+<h2>2. Shoppers on stores that use Shop Manager</h2>
+<p>When a store uses Shop Manager, the store decides how its shoppers' data is used (the store is the <b>controller</b>) and Sirge handles that data only on the store's behalf and instructions (we are the <b>processor</b>). If you shopped on one of these stores, the store's own privacy policy applies, and the store is the right place to send requests — we help them answer.</p>
 
-  <h2>What we use it for</h2>
-  <ul>
-    <li>To contact you about early access, your audit, or your call — the thing you asked for.</li>
-    <li>To understand which channels and messages bring the right visitors, so a small team can
-    spend its budget sensibly.</li>
-    <li>To improve this page. The live demo on the landing page runs in your browser; its
-    session log is shown to you and isn't transmitted unless you submit a form.</li>
-  </ul>
+<h3>What we collect on the store</h3>
+<ul>
+  <li><b>Recordings of how pages are used:</b> the page layout, scrolling, mouse movement, clicks and taps on the store's own pages, so the store can see where shoppers get stuck.</li>
+  <li><b>Visit events:</b> pages viewed, add-to-carts, page speed, errors on the page, and where the visit came from (the referring site and campaign tags).</li>
+  <li><b>A visitor id:</b> a random first-party cookie on the store's own domain, so two pages of the same visit, or a return visit, are counted together.</li>
+  <li><b>Orders:</b> the order details Shopify sends the store's app (order number, value, products and time), so visits can be tied to sales.</li>
+</ul>
 
-  <h2>Analytics and advertising tools</h2>
-  <p>When enabled, this site uses common third-party tools that set cookies or similar
-  identifiers: Meta Pixel, TikTok Pixel, Google tag (GA4/Ads), Microsoft Clarity, and Cloudflare
-  Web Analytics. These help us measure whether our ads worked and how the page performs. Each
-  provider processes data under its own privacy policy. If you use an ad blocker or your browser
-  blocks these, the page works fine without them.</p>
+<h3>What we never collect or do</h3>
+<ul>
+  <li>We never record what shoppers type. Every input is masked in the shopper's browser before anything is sent, along with text the store marks as private and common places names and emails appear.</li>
+  <li>We never record checkout or payment pages, and payment buttons are blocked from recordings.</li>
+  <li>We strip personal details (such as email addresses) from page addresses before they are stored.</li>
+  <li>We don't use browser fingerprinting.</li>
+  <li>We don't sell or share shopper data, use it for advertising, or build profiles that follow a shopper from one store to another.</li>
+</ul>
 
-  <h2>Where your data lives</h2>
-  <p>Form submissions are stored in a private spreadsheet we control (Google Sheets, via Google
-  Apps Script). Access is limited to the founder(s). We keep signups until launch onboarding is
-  complete or you ask us to delete yours.</p>
+<h3>Consent</h3>
+<p>Shop Manager follows the store's Shopify cookie consent settings. Where a shopper's consent is required and hasn't been given, we don't record the visit or collect events about it; if they agree later, collection starts from that point, and it stops again if they withdraw. If a shopper's browser sends a Global Privacy Control signal, we treat it as an opt-out of sale and sharing and collect no advertising identifiers.</p>
 
-  <h2>What we never do</h2>
-  <ul>
-    <li>Sell or rent your personal data.</li>
-    <li>Send your data to anyone except the service providers listed above.</li>
-    <li>Sign you up for anything you didn't ask for.</li>
-  </ul>
+<h3>How long we keep it</h3>
+<ul>
+  <li><b>Recordings</b> are deleted automatically 90 days after the visit.</li>
+  <li><b>Visit events and orders</b> are kept while the store uses Shop Manager, so it can compare this month with last. They are deleted when the store leaves (Shopify tells us when the app is removed) or asks us to delete them.</li>
+</ul>
 
-  <h2>Your choices</h2>
-  <ul>
-    <li><b>Unsubscribe:</b> every email we send has an opt-out, or just reply "stop."</li>
-    <li><b>Access or deletion:</b> email us and we'll show you what we hold about you, correct
-    it, or delete it — usually within a few days.</li>
-    <li><b>Cookies:</b> you can block or clear cookies in your browser at any time.</li>
-  </ul>
+<h3>Deletion requests</h3>
+<p>When a shopper asks a store to erase their data, Shopify passes the request to us and we delete that shopper's recordings, events and order links. Stores can also ask us directly. When a store removes Shop Manager, its data is deleted.</p>
 
-  <h2>Contact</h2>
-  <p>Questions or requests: <a href="mailto:[contact email]">[contact email]</a> · [your-domain]</p>
+<h2>3. Where data is kept and who helps us</h2>
+<p>Data is stored and processed in the United States, on Amazon Web Services (Oregon, us-west-2) and Supabase, and is encrypted in transit and at rest. The companies that help us run Shop Manager are listed on our <a href="subprocessors.html">sub-processors</a> page, and how we protect data is on our <a href="security.html">security</a> page. For stores with shoppers in the EU or UK, our <a href="dpa.html">data processing addendum</a> covers international transfers.</p>
 
-  <div class="card">This policy covers this pre-launch website only. When the Shop Manager product
-  launches (watching sessions on merchants' own stores), it will ship with its own privacy policy
-  and data-processing terms covering that service. Note: this page is a plain-language policy
-  written for a pre-launch landing page — have a lawyer review it before you rely on it.</div>
+<h2>4. Your choices and rights</h2>
+<ul>
+  <li><b>Merchants and website visitors:</b> email us to see, correct or delete what we hold about you. We reply within 30 days, usually much sooner.</li>
+  <li><b>Shoppers:</b> contact the store you shopped with; they can delete your data through Shopify or by asking us.</li>
+  <li><b>Opting out:</b> decline analytics cookies in the store's cookie banner, turn on Global Privacy Control in your browser, or clear the store's cookies.</li>
+</ul>
 
-  <a class="back" href="index.html">← Back to the site</a>
-</div>
+<h2>5. Children</h2>
+<p>Shop Manager is a tool for businesses and is not aimed at children. Stores that sell to children, or sell age-restricted products, should tell us so we can agree how their store is set up.</p>
+
+<h2>6. Changes and contact</h2>
+<p>If we change this policy in a way that matters, we'll update the date above and tell merchants by email. Questions or requests: <a href="mailto:shahz@sirge.io">shahz@sirge.io</a>.</p>
+</main>
+<footer>
+  <div class="wrap">
+    <span>© 2026 Shop Manager by Sirge</span>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="dpa.html">DPA</a>
+    <a href="subprocessors.html">Sub-processors</a>
+    <a href="security.html">Security</a>
+    <a href="install.html">Install</a>
+    <a href="https://shop.sirge.io/login" data-login>Log in</a>
+  </div>
+</footer>
 </body>
 </html>

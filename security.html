@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security — Shop Manager</title>
+<meta name="description" content="How Shop Manager protects your store’s data and your shoppers’ privacy.">
+<link rel="icon" href="https://shop.sirge.io/favicon.ico">
+<style>
+.smpub{--page:#F8F9F1;--paper:#FFFDF6;--ink:#22301F;--ink-dim:#5F7060;--cream:#F6F7EF;--green:#3F8C46;--green-bright:#96BF48;--meadow:#DCEDCB;--sky:#E3F1F4;--edge:rgba(34,48,31,.1);
+  background:var(--page);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.smpub,.smpub *{box-sizing:border-box;margin:0;padding:0}
+.smpub h1,.smpub h2,.smpub h3{color:var(--ink)}
+.smpub a{color:var(--green)}
+.smpub a:focus-visible,.smpub button:focus-visible{outline:3px solid rgba(63,140,70,.55);outline-offset:2px}
+.smpub .top{background:linear-gradient(180deg,var(--sky) 0%,#EDF4E4 70%,var(--page) 100%)}
+.smpub nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 48px;max-width:1440px;margin:0 auto}
+.smpub .brand{font-size:21px;font-weight:700;letter-spacing:.01em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.smpub .brand span{font-weight:400;color:var(--ink-dim)}
+.smpub .navlinks{display:flex;align-items:center;gap:22px}
+.smpub .navlink{color:var(--ink);font-size:15px;font-weight:600;text-decoration:none;padding:10px 2px;white-space:nowrap}
+.smpub .navlink:hover{color:var(--green)}
+.smpub .btn{display:inline-block;border:0;cursor:pointer;text-decoration:none;text-align:center;padding:12px 24px;border-radius:999px;white-space:nowrap;color:#fff;font-size:15px;font-weight:600;font-family:inherit;background:linear-gradient(180deg,#58A14E,var(--green));box-shadow:0 6px 16px rgba(63,140,70,.3),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .25s,box-shadow .25s}
+.smpub .btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(63,140,70,.38)}
+.smpub .btn.ghost{background:#fff;color:var(--green);border:1.5px solid rgba(63,140,70,.4);box-shadow:none}
+.smpub header.doc{max-width:760px;margin:0 auto;padding:36px 24px 8px}
+.smpub .eyebrow{display:inline-block;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--green);background:rgba(150,191,72,.14);border:1px solid rgba(63,140,70,.3)}
+.smpub h1{margin-top:18px;font-size:clamp(30px,4vw,42px);line-height:1.12;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+.smpub main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:8px 24px 80px}
+.smpub .updated{font-size:13px;color:var(--ink-dim)}
+.smpub .lead{margin-top:16px;font-size:17px;color:var(--ink-dim)}
+.smpub h2{margin-top:40px;font-size:21px;font-weight:800;letter-spacing:-.01em}
+.smpub h3{margin-top:24px;font-size:16.5px;font-weight:700}
+.smpub p,.smpub li{margin-top:12px;font-size:15.5px;color:var(--ink-dim);overflow-wrap:anywhere}
+.smpub ul,.smpub ol{padding-left:22px}
+.smpub b{color:var(--ink)}
+.smpub code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;background:rgba(34,48,31,.06);border-radius:5px;padding:1px 5px;color:var(--ink);overflow-wrap:anywhere}
+.smpub .card{margin-top:24px;background:var(--paper);border:1px solid var(--edge);border-radius:14px;padding:18px 20px;font-size:15px;color:var(--ink-dim);box-shadow:0 10px 26px rgba(34,48,31,.06)}
+.smpub .copy-box{margin-top:12px;background:var(--paper);border:1px dashed rgba(63,140,70,.45);border-radius:12px;padding:16px 18px;font-size:14.5px;line-height:1.6;color:var(--ink);user-select:all;overflow-wrap:anywhere}
+.smpub ol.steps{list-style:none;padding:0;counter-reset:st;margin-top:20px}
+.smpub ol.steps>li{counter-increment:st;position:relative;margin-top:22px;padding:20px 22px 20px 64px;background:var(--paper);border:1px solid var(--edge);border-radius:16px;box-shadow:0 10px 26px rgba(34,48,31,.06)}
+.smpub ol.steps>li::before{content:counter(st);position:absolute;left:20px;top:20px;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.smpub ol.steps h3{margin-top:2px}
+.smpub ol.steps p{margin-top:8px}
+.smpub .sp{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.smpub .sp-row{background:var(--paper);border:1px solid var(--edge);border-radius:14px;padding:16px 20px}
+.smpub .sp-row h3{margin-top:0}
+.smpub .sp-row .sp-what{margin-top:6px}
+.smpub .sp-row .sp-where{margin-top:6px;font-size:13px;font-weight:600;color:var(--green)}
+.smpub .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.smpub footer{background:var(--ink);color:rgba(246,247,239,.65);padding:34px 24px;font-size:13.5px}
+.smpub footer .wrap{display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:center;text-align:center;max-width:1000px;margin:0 auto}
+.smpub footer a{color:var(--cream);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:1240px){.smpub nav{padding:20px 24px}}
+@media (max-width:640px){
+  .smpub nav{padding:14px 20px}
+  .smpub .navlinks{gap:14px}
+  .smpub .navlinks .hide-sm{display:none}
+  .smpub .navlink{font-size:14px}
+  .smpub nav .btn{padding:10px 16px;font-size:14px}
+  .smpub header.doc{padding:22px 20px 4px}
+  .smpub main{padding:4px 20px 64px}
+  .smpub ol.steps>li{padding:18px 18px 18px 58px}
+  .smpub ol.steps>li::before{left:16px}
+}
+@media (prefers-reduced-motion:reduce){.smpub *{transition:none !important}.smpub .btn:hover{transform:none}}
+</style>
+</head>
+<body class="smpub">
+<div class="top"><nav>
+  <a class="brand" href="index.html">shop <span>manager</span></a>
+  <div class="navlinks">
+    <a class="navlink hide-sm" href="index.html#s-plan">How it works</a>
+    <a class="navlink hide-sm" href="index.html#s-pricing">Pricing</a>
+    <a class="navlink" href="https://shop.sirge.io/login" data-login>Log in</a>
+    <a class="btn" href="mailto:shahz@sirge.io?subject=Shop%20Manager%20call" data-book-call>Book a call</a>
+  </div>
+</nav>
+<header class="doc"><span class="eyebrow">Security</span><h1>Security</h1></header></div>
+<main>
+<p class="updated">Last updated: 29 October 2026</p>
+<p class="lead">We hold ourselves to the standard we'd want for our own store's shoppers. Here is what that means in practice.</p>
+
+<h2>Masked before it leaves the browser</h2>
+<ul>
+  <li>Everything a shopper types is masked in their browser, before anything is sent to us.</li>
+  <li>Text in places names and emails usually appear is masked too, and you can mask anything else by adding <code>data-sirge-mask</code> (or the class <code>sirge-mask</code>) to it.</li>
+  <li>Checkout and payment pages are never recorded, and payment buttons are blocked from recordings.</li>
+  <li>Personal details such as email addresses are stripped from page addresses before they are stored.</li>
+  <li>Recording follows your Shopify cookie consent settings, and the recorder never blocks your page from loading.</li>
+</ul>
+
+<h2>Encryption</h2>
+<ul>
+  <li><b>In transit:</b> every connection — from your store to us, and from you to the app — uses HTTPS (TLS).</li>
+  <li><b>At rest:</b> recordings and event data are stored encrypted (AES-256) on AWS in Oregon (us-west-2); the app's database is encrypted at rest by Supabase.</li>
+</ul>
+
+<h2>Retention</h2>
+<ul>
+  <li>Recordings are deleted automatically 90 days after the visit by a storage rule — no one has to remember to do it.</li>
+  <li>Raw visit events move out of the live database within days into encrypted storage, and are deleted when your store leaves.</li>
+</ul>
+
+<h2>Access control</h2>
+<ul>
+  <li>You and your team sign in by email and see only the stores you manage.</li>
+  <li>Inside Sirge, access to store data is limited to the people who run the service and support your store.</li>
+  <li>Our servers run with only the permissions they need, and keys are kept out of code.</li>
+  <li>Messages from Shopify are checked for Shopify's signature before we act on them, and scheduled jobs need a secret to run.</li>
+  <li>Your team's own visits are kept out of the numbers with a staff link, so you don't have to share data about them either.</li>
+</ul>
+
+<h2>Deletion</h2>
+<ul>
+  <li>When a shopper asks your store to erase their data, Shopify tells us and we delete their recordings, events and order links.</li>
+  <li>When you remove Shop Manager, Shopify tells us and your store's data is deleted.</li>
+  <li>You can also ask us to delete a shopper or your whole store at any time.</li>
+</ul>
+
+<h2>Report a problem</h2>
+<p>If you think you've found a security issue, email <a href="mailto:shahz@sirge.io?subject=Security">shahz@sirge.io</a>. We'll reply quickly and keep you updated while we fix it.</p>
+</main>
+<footer>
+  <div class="wrap">
+    <span>© 2026 Shop Manager by Sirge</span>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="dpa.html">DPA</a>
+    <a href="subprocessors.html">Sub-processors</a>
+    <a href="security.html">Security</a>
+    <a href="install.html">Install</a>
+    <a href="https://shop.sirge.io/login" data-login>Log in</a>
+  </div>
+</footer>
+</body>
+</html>
